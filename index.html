@@ -1,1 +1,454 @@
+<!DOCTYPE html>
+<html lang="ms" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMP - Aplikasi Interaktif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Professional Blue Accent -->
+    <!-- Application Structure Plan: The application uses a tab-based navigation structure (Pengenalan, Aliran Kerja, Peranan Agensi, Papan Pemuka, Impak) to break down the complex report into logical, user-selectable sections. This is more user-friendly than a long, linear scroll, allowing stakeholders (e.g., an agency officer) to directly access relevant information. The user flow is non-linear, encouraging exploration. Interactivity is centered on the 'Peranan Agensi' (filtering roles) and 'Papan Pemuka' (dynamic chart data) sections, transforming the static report into an analytical tool. This structure was chosen to enhance usability and make dense information digestible and explorable. -->
+    <!-- Visualization & Content Choices: 
+        - Latar Belakang (Problem): Goal: Inform -> Large static number & text. Justification: Immediately grabs attention with the core problem statistic.
+        - Isu Utama (Key Issues): Goal: Compare -> Horizontal Bar Chart (Chart.js). Interaction: Tooltips. Justification: Effectively compares the frequency of different complaint categories.
+        - Aliran Kerja (Workflow): Goal: Organize -> Interactive HTML/CSS diagram. Interaction: Hover effects on steps. Justification: Provides a clear, step-by-step process view without using SVG/Mermaid.
+        - Peranan Agensi (Agency Roles): Goal: Organize/Inform -> Filterable card grid. Interaction: Click buttons to filter/highlight agency roles. Justification: Allows users to quickly isolate and understand the responsibilities of a specific agency.
+        - Papan Pemuka (Dashboard): Goal: Inform/Compare/Change -> Doughnut, Line, and Bar charts (Chart.js) with dynamic updates. Interaction: Dropdown to simulate filtering data by region, updating a chart and a text summary. Justification: Creates an interactive analytical experience, allowing users to explore data subsets.
+        - Impak (Impact): Goal: Inform -> Styled HTML cards with Unicode icons. Justification: Presents key benefits in a visually appealing and easily scannable format.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            border-bottom-color: #2f4b7c;
+            color: #2f4b7c;
+        }
+        .view {
+            display: none;
+        }
+        .view.active {
+            display: block;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .agency-card {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <div id="app-container" class="max-w-7xl mx-auto">
+        <header class="sticky top-0 bg-[#f8f7f4]/80 backdrop-blur-lg z-10 shadow-sm">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between py-4">
+                    <div class="flex items-center">
+                        <h1 class="text-2xl font-bold text-[#2f4b7c]">SIMP</h1>
+                        <p class="hidden sm:block ml-4 text-sm text-slate-500">Aplikasi Interaktif Pemantauan Pekerja</p>
+                    </div>
+                    <nav id="main-nav" class="hidden md:flex items-center space-x-6 text-sm font-semibold text-slate-600">
+                        <a href="#pengenalan" class="nav-link active">Pengenalan</a>
+                        <a href="#aliran-kerja" class="nav-link">Aliran Kerja</a>
+                        <a href="#peranan-agensi" class="nav-link">Peranan Agensi</a>
+                        <a href="#papan-pemuka" class="nav-link">Papan Pemuka</a>
+                        <a href="#impak" class="nav-link">Impak</a>
+                    </nav>
+                    <div class="md:hidden">
+                        <select id="mobile-nav" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <option value="pengenalan">Pengenalan</option>
+                            <option value="aliran-kerja">Aliran Kerja</option>
+                            <option value="peranan-agensi">Peranan Agensi</option>
+                            <option value="papan-pemuka">Papan Pemuka</option>
+                            <option value="impak">Impak</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+            
+            <div id="pengenalan" class="view active">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Menangani Cabaran Penempatan Pekerja</h2>
+                    <p class="mt-2 max-w-2xl mx-auto text-slate-500">SIMP adalah platform bersepadu yang direka untuk merevolusikan pengurusan penginapan pekerja, memastikan ia selamat, teratur, dan berperikemanusiaan.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200 text-center">
+                        <p class="text-7xl font-extrabold text-[#d45087]">40%</p>
+                        <h3 class="text-xl font-semibold text-slate-700 mt-2">Ketidakpatuhan Terhadap Akta 446</h3>
+                        <p class="text-slate-500 mt-1">Data terkini menunjukkan sebahagian besar penginapan pekerja sedia ada gagal memenuhi standard minimum yang ditetapkan, mewujudkan pelbagai risiko sosial dan kesihatan.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="font-semibold text-center text-slate-700 mb-4">Pecahan Isu Utama Dilaporkan</h3>
+                        <div class="chart-container" style="height: 300px; max-height: 350px;">
+                            <canvas id="isuUtamaChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="aliran-kerja" class="view">
+                 <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Proses Pengurusan Bersepadu</h2>
+                    <p class="mt-2 max-w-2xl mx-auto text-slate-500">Aliran kerja SIMP direka untuk memastikan setiap permohonan disemak, diperiksa, dan dipantau secara telus oleh semua agensi yang berkaitan.</p>
+                </div>
+                <div id="workflow-diagram" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-start">
+                    <div class="workflow-step text-center p-4 bg-white rounded-lg shadow-md border-t-4 border-[#2f4b7c]">
+                        <div class="text-3xl font-bold text-[#2f4b7c]">1</div>
+                        <h3 class="font-semibold mt-2">Permohonan</h3>
+                        <p class="text-sm text-slate-500 mt-1">Majikan mendaftar & menyerahkan butiran penginapan melalui portal SIMP.</p>
+                    </div>
+                    <div class="workflow-step text-center p-4 bg-white rounded-lg shadow-md border-t-4 border-[#665191]">
+                        <div class="text-3xl font-bold text-[#665191]">2</div>
+                        <h3 class="font-semibold mt-2">Semakan</h3>
+                        <p class="text-sm text-slate-500 mt-1">Sistem menyemak silang data dengan PBT, Pejabat Tanah, dan agensi teknikal.</p>
+                    </div>
+                    <div class="workflow-step text-center p-4 bg-white rounded-lg shadow-md border-t-4 border-[#a05195]">
+                        <div class="text-3xl font-bold text-[#a05195]">3</div>
+                        <h3 class="font-semibold mt-2">Pemeriksaan</h3>
+                        <p class="text-sm text-slate-500 mt-1">Pasukan penguatkuasa bersepadu menjalankan lawatan tapak untuk verifikasi fizikal.</p>
+                    </div>
+                    <div class="workflow-step text-center p-4 bg-white rounded-lg shadow-md border-t-4 border-[#d45087]">
+                        <div class="text-3xl font-bold text-[#d45087]">4</div>
+                        <h3 class="font-semibold mt-2">Kelulusan</h3>
+                        <p class="text-sm text-slate-500 mt-1">Sijil Pematuhan (CPC) dikeluarkan atau notis pembaikan diberi berdasarkan laporan.</p>
+                    </div>
+                    <div class="workflow-step text-center p-4 bg-white rounded-lg shadow-md border-t-4 border-[#f95d6a]">
+                        <div class="text-3xl font-bold text-[#f95d6a]">5</div>
+                        <h3 class="font-semibold mt-2">Pemantauan</h3>
+                        <p class="text-sm text-slate-500 mt-1">Audit berkala dan siasatan aduan untuk memastikan pematuhan berterusan.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="peranan-agensi" class="view">
+                 <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Ekosistem Kerjasama Pelbagai Agensi</h2>
+                    <p class="mt-2 max-w-2xl mx-auto text-slate-500">Pilih agensi untuk melihat peranan spesifik mereka dalam ekosistem SIMP. Kerjasama bersepadu adalah kunci kejayaan sistem ini.</p>
+                </div>
+                <div class="flex flex-wrap justify-center gap-2 mb-8" id="agency-filters">
+                    <button class="agency-filter-btn px-4 py-2 bg-[#2f4b7c] text-white rounded-full text-sm" data-agency="all">Semua Agensi</button>
+                    <!-- Agency buttons will be injected here by JS -->
+                </div>
+                <div id="agency-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Agency cards will be injected here by JS -->
+                </div>
+            </div>
+
+            <div id="papan-pemuka" class="view">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Papan Pemuka Analitis Data</h2>
+                    <p class="mt-2 max-w-2xl mx-auto text-slate-500">Visualisasi data masa nyata untuk membantu agensi membuat keputusan yang lebih strategik dan termaklum.</p>
+                </div>
+                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="font-semibold text-center text-slate-700 mb-4">Status Pematuhan Penginapan</h3>
+                        <div class="chart-container mx-auto" style="height: 300px; max-height: 350px;">
+                            <canvas id="pematuhanChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                        <h3 class="font-semibold text-center text-slate-700 mb-4">Trend Pendaftaran Penginapan Bulanan</h3>
+                        <div class="chart-container mx-auto" style="height: 300px; max-height: 350px;">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-5 bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                         <div class="md:flex justify-between items-center mb-4">
+                            <h3 class="font-semibold text-center md:text-left text-slate-700">Taburan Pekerja Mengikut Negeri</h3>
+                            <div class="flex items-center justify-center mt-4 md:mt-0">
+                                <label for="state-filter" class="mr-2 text-sm">Pilih Data:</label>
+                                <select id="state-filter" class="text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <option value="utama">Negeri Utama</option>
+                                    <option value="perindustrian">Zon Perindustrian</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="chart-container mx-auto" style="height: 300px; max-height: 350px;">
+                            <canvas id="negeriChart"></canvas>
+                        </div>
+                        <p id="negeri-summary" class="text-center text-sm text-slate-500 mt-4"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="impak" class="view">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Faedah & Impak Positif SIMP</h2>
+                    <p class="mt-2 max-w-2xl mx-auto text-slate-500">Pelaksanaan SIMP akan membawa manfaat ketara kepada pekerja, majikan, kerajaan, dan masyarakat umum secara keseluruhannya.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                        <div class="text-4xl">🏠</div>
+                        <h3 class="font-bold text-lg mt-3 text-slate-800">Kualiti Hidup Pekerja</h3>
+                        <p class="text-slate-500 text-sm mt-1">Menjamin persekitaran hidup yang lebih selamat, bersih, dan selesa, meningkatkan produktiviti dan kesejahteraan.</p>
+                    </div>
+                    <div class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                        <div class="text-4xl">📊</div>
+                        <h3 class="font-bold text-lg mt-3 text-slate-800">Data Berpusat & Tepat</h3>
+                        <p class="text-slate-500 text-sm mt-1">Menyediakan data masa nyata untuk perancangan bandar yang lebih baik dan pengagihan sumber yang efisien.</p>
+                    </div>
+                    <div class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                        <div class="text-4xl">⚙️</div>
+                        <h3 class="font-bold text-lg mt-3 text-slate-800">Proses Cekap & Telus</h3>
+                        <p class="text-slate-500 text-sm mt-1">Mengurangkan kerenah birokrasi dan mempermudah proses permohonan dan kelulusan bagi majikan.</p>
+                    </div>
+                    <div class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                        <div class="text-4xl">🛡️</div>
+                        <h3 class="font-bold text-lg mt-3 text-slate-800">Penguatkuasaan Efektif</h3>
+                        <p class="text-slate-500 text-sm mt-1">Membolehkan tindakan penguatkuasaan yang lebih pantas, bersepadu, dan konsisten terhadap ketidakpatuhan.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const chartColors = {
+        primary: '#2f4b7c',
+        accent1: '#665191',
+        accent2: '#a05195',
+        accent3: '#d45087',
+        accent4: '#f95d6a',
+        accent5: '#ff7c43',
+        accent6: '#ffa600'
+    };
+    const colorPalette = Object.values(chartColors);
+    const chartFont = { family: 'Inter', size: 12, color: '#475569' };
+
+    const agencyData = [
+        { id: 'pbt', name: 'PBT', role: 'Kelulusan perancangan, kebenaran mendirikan bangunan, dan penguatkuasaan undang-undang kecil tempatan.', color: chartColors.primary },
+        { id: 'kesihatan', name: 'Pejabat Kesihatan', role: 'Pematuhan standard kebersihan, sanitasi, dan kawalan penyakit berjangkit.', color: chartColors.accent1 },
+        { id: 'tanah', name: 'Pejabat Tanah', role: 'Pengesahan status pemilikan dan syarat-syarat nyata tanah.', color: chartColors.accent2 },
+        { id: 'pendidikan', name: 'Jabatan Pendidikan', role: 'Memastikan tiada impak negatif kepada institusi pendidikan berdekatan.', color: chartColors.accent3 },
+        { id: 'kebajikan', name: 'Jabatan Kebajikan', role: 'Menjaga aspek kebajikan dan perlindungan sosial pekerja.', color: chartColors.accent4 },
+        { id: 'jpbd', name: 'PLANMalaysia (JPBD)', role: 'Memastikan pematuhan dengan garis panduan perancangan dan Rancangan Tempatan.', color: chartColors.accent5 },
+        { id: 'jtk', name: 'Jabatan Tenaga Kerja', role: 'Penguatkuasaan Akta 446 dan memastikan hak-hak pekerja dipenuhi.', color: chartColors.accent6 },
+        { id: 'imigresen', name: 'Jabatan Imigresen', role: 'Pengesahan permit kerja dan status sah pekerja asing.', color: chartColors.primary }
+    ];
+
+    const dashboardData = {
+        utama: {
+            labels: ['Selangor', 'Johor', 'Pulau Pinang', 'Perak', 'Negeri Sembilan', 'Melaka'],
+            data: [450, 380, 310, 220, 180, 150],
+            summary: 'Data menunjukkan tumpuan pekerja tertinggi di negeri-negeri perindustrian utama, membolehkan agensi menumpukan sumber penguatkuasaan dengan lebih strategik.'
+        },
+        perindustrian: {
+            labels: ['Lembah Klang', 'Iskandar Malaysia', 'Koridor Utara', 'Lembah Kinta'],
+            data: [420, 350, 280, 190],
+            summary: 'Apabila dikelompokkan mengikut zon perindustrian, Lembah Klang dan Iskandar Malaysia jelas menonjol sebagai hab utama penempatan pekerja.'
+        }
+    };
+    
+    const tooltipTitleCallback = {
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    title: function(tooltipItems) {
+                        const item = tooltipItems[0];
+                        let label = item.chart.data.labels[item.dataIndex];
+                        return Array.isArray(label) ? label.join(' ') : label;
+                    }
+                }
+            }
+        }
+    };
+
+    function processLongLabels(labels, maxLength = 16) {
+        return labels.map(label => {
+            if (typeof label === 'string' && label.length > maxLength) {
+                const words = label.split(' ');
+                const newLabels = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + word).length > maxLength) {
+                        newLabels.push(currentLine.trim());
+                        currentLine = '';
+                    }
+                    currentLine += word + ' ';
+                });
+                newLabels.push(currentLine.trim());
+                return newLabels;
+            }
+            return label;
+        });
+    }
+
+    const views = document.querySelectorAll('.view');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const mobileNav = document.getElementById('mobile-nav');
+
+    function switchView(viewId) {
+        views.forEach(view => {
+            view.classList.toggle('active', view.id === viewId);
+        });
+        navLinks.forEach(link => {
+            link.classList.toggle('active', link.hash === `#${viewId}`);
+        });
+        if (mobileNav.value !== viewId) {
+            mobileNav.value = viewId;
+        }
+        window.scrollTo(0, 0);
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const viewId = e.target.hash.substring(1);
+            switchView(viewId);
+        });
+    });
+
+    mobileNav.addEventListener('change', (e) => {
+        switchView(e.target.value);
+    });
+    
+    const agencyFiltersContainer = document.getElementById('agency-filters');
+    const agencyGrid = document.getElementById('agency-grid');
+    
+    agencyData.forEach(agency => {
+        const button = document.createElement('button');
+        button.className = 'agency-filter-btn px-4 py-2 bg-white text-slate-600 border border-slate-300 rounded-full text-sm hover:bg-slate-100';
+        button.textContent = agency.name;
+        button.dataset.agency = agency.id;
+        agencyFiltersContainer.appendChild(button);
+
+        const card = document.createElement('div');
+        card.className = 'agency-card p-5 bg-white rounded-lg shadow-md';
+        card.dataset.agency = agency.id;
+        card.style.borderLeft = `4px solid ${agency.color}`;
+        card.innerHTML = `<h3 class="font-bold text-lg text-slate-800">${agency.name}</h3><p class="text-slate-500 text-sm mt-1">${agency.role}</p>`;
+        agencyGrid.appendChild(card);
+    });
+
+    agencyFiltersContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('agency-filter-btn')) {
+            const filter = e.target.dataset.agency;
+            const allCards = agencyGrid.querySelectorAll('.agency-card');
+
+            allCards.forEach(card => {
+                const isMatch = filter === 'all' || card.dataset.agency === filter;
+                card.style.opacity = isMatch ? '1' : '0.3';
+                card.style.transform = isMatch ? 'scale(1)' : 'scale(0.95)';
+            });
+            
+            agencyFiltersContainer.querySelectorAll('.agency-filter-btn').forEach(btn => {
+                btn.classList.toggle('bg-[#2f4b7c]', btn === e.target);
+                 btn.classList.toggle('text-white', btn === e.target);
+            });
+        }
+    });
+
+    let isuUtamaChart, pematuhanChart, trendChart, negeriChart;
+
+    if (document.getElementById('isuUtamaChart')) {
+        const ctx = document.getElementById('isuUtamaChart').getContext('2d');
+        isuUtamaChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: processLongLabels(['Kesesakan Melampau', 'Sanitasi Tidak Memuaskan', 'Risiko Keselamatan Kebakaran', 'Isu Sosial Setempat']),
+                datasets: [{
+                    label: 'Peratusan Aduan',
+                    data: [35, 25, 20, 12],
+                    backgroundColor: [chartColors.accent3, chartColors.accent4, chartColors.accent5, chartColors.accent6],
+                }]
+            },
+            options: {
+                ...tooltipTitleCallback, responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+                scales: { x: { beginAtZero: true, ticks: { font: chartFont }, grid: { color: '#e2e8f0' } }, y: { ticks: { font: chartFont }, grid: { display: false } } },
+                plugins: { ...tooltipTitleCallback.plugins, legend: { display: false } }
+            }
+        });
+    }
+
+    if (document.getElementById('pematuhanChart')) {
+        const ctx = document.getElementById('pematuhanChart').getContext('2d');
+        pematuhanChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Patuh', 'Dalam Pembaikan', 'Tidak Patuh'],
+                datasets: [{ data: [65, 25, 10], backgroundColor: [chartColors.primary, chartColors.accent6, chartColors.accent3], hoverOffset: 4 }]
+            },
+            options: {
+                ...tooltipTitleCallback, responsive: true, maintainAspectRatio: false,
+                plugins: { ...tooltipTitleCallback.plugins, legend: { position: 'bottom', labels: { font: chartFont } } }
+            }
+        });
+    }
+
+    if (document.getElementById('trendChart')) {
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        trendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ogo'],
+                datasets: [{
+                    label: 'Pendaftaran Baharu',
+                    data: [120, 150, 180, 210, 250, 320, 350, 330],
+                    fill: true, backgroundColor: 'rgba(102, 81, 145, 0.2)', borderColor: chartColors.accent1, tension: 0.4
+                }]
+            },
+            options: {
+                ...tooltipTitleCallback, responsive: true, maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, ticks: { font: chartFont }, grid: { color: '#e2e8f0' } }, x: { ticks: { font: chartFont }, grid: { display: false } } },
+                plugins: { ...tooltipTitleCallback.plugins, legend: { display: false } }
+            }
+        });
+    }
+
+    const negeriChartCtx = document.getElementById('negeriChart')?.getContext('2d');
+    if (negeriChartCtx) {
+        negeriChart = new Chart(negeriChartCtx, {
+            type: 'bar',
+            data: {
+                labels: dashboardData.utama.labels,
+                datasets: [{ label: 'Anggaran Pekerja (Ribu)', data: dashboardData.utama.data, backgroundColor: colorPalette }]
+            },
+            options: {
+                ...tooltipTitleCallback, responsive: true, maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, ticks: { font: chartFont }, grid: { color: '#e2e8f0' } }, x: { ticks: { font: chartFont }, grid: { display: false } } },
+                plugins: { ...tooltipTitleCallback.plugins, legend: { display: false } }
+            }
+        });
+        document.getElementById('negeri-summary').textContent = dashboardData.utama.summary;
+
+        document.getElementById('state-filter').addEventListener('change', (e) => {
+            const selectedData = dashboardData[e.target.value];
+            negeriChart.data.labels = selectedData.labels;
+            negeriChart.data.datasets[0].data = selectedData.data;
+            negeriChart.update();
+            document.getElementById('negeri-summary').textContent = selectedData.summary;
+        });
+    }
+
+    switchView('pengenalan');
+});
+</script>
+</body>
+</html>
 
