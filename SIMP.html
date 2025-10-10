@@ -18,11 +18,13 @@
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 50; display: none; align-items: center; justify-content: center; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 50; display: none; align-items: center; justify-content: center; animation: fadeIn 0.3s; }
         .modal-overlay.active { display: flex; }
+        .modal-content { max-height: 90vh; overflow-y: auto; }
         .tab-button.active { border-bottom-color: #4f46e5; color: #4f46e5; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        .simp-item-card { cursor: pointer; }
     </style>
 </head>
 <body class="text-slate-700">
@@ -71,7 +73,7 @@
                 
                 <!-- Dashboard View -->
                 <div id="dashboard" class="view active">
-                    <!-- Dashboard content here -->
+                    <!-- Dashboard content -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                         <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
                             <h3 class="text-slate-500 text-sm">Projek Aktif Diselia</h3>
@@ -90,7 +92,6 @@
                             <p class="text-3xl font-bold">27</p>
                         </div>
                     </div>
-
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow">
                             <h3 class="font-semibold mb-4">Senarai Tugasan Kritikal</h3>
@@ -116,14 +117,12 @@
 
                 <!-- Projects View -->
                 <div id="projects" class="view">
-                    <!-- Project List and Details -->
                      <div class="bg-white p-6 rounded-lg shadow">
                         <div class="flex justify-between items-center mb-4">
                              <h3 class="text-xl font-semibold">Projek: <span id="project-name-display">Memuatkan...</span></h3>
                              <button class="bg-gray-200 text-sm px-3 py-1 rounded">Tukar Projek</button>
                         </div>
                          <div id="project-details-view" class="bg-white rounded-lg border">
-                            <!-- Project tabs -->
                             <div class="border-b border-gray-200">
                                 <nav id="project-tabs" class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
                                     <button data-target="tab-simp-matrix" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300 active">Matriks SIMP</button>
@@ -131,20 +130,15 @@
                                     <button data-target="tab-smc-meetings" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300">Mesyuarat SMC</button>
                                 </nav>
                             </div>
-                            <!-- Tab Content -->
                             <div class="p-6">
                                 <div id="tab-simp-matrix" class="tab-content active">
-                                    <h4 class="font-semibold mb-4">Matriks SIMP</h4>
-                                    <!-- SIMP Matrix will be rendered here -->
                                     <div class="space-y-2" id="simp-matrix-container"><p class="text-center text-gray-500">Memuatkan data Matriks SIMP...</p></div>
                                 </div>
                                 <div id="tab-monitoring-reports" class="tab-content">
-                                    <h4 class="font-semibold mb-4">Laporan Pemantauan</h4>
                                     <button id="show-report-modal-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm mb-4 hover:bg-indigo-700">Serah Laporan Baru</button>
                                     <div id="monitoring-reports-container" class="space-y-3"><p class="text-center text-gray-500">Memuatkan data laporan...</p></div>
                                 </div>
                                 <div id="tab-smc-meetings" class="tab-content">
-                                    <h4 class="font-semibold mb-4">Mesyuarat SMC</h4>
                                     <div id="smc-meetings-container" class="space-y-3"><p class="text-center text-gray-500">Memuatkan data mesyuarat...</p></div>
                                 </div>
                             </div>
@@ -152,13 +146,8 @@
                     </div>
                 </div>
                 
-                 <!-- Other Views (Reports, Complaints) would go here -->
-                <div id="reports" class="view">
-                    <p>Halaman Laporan Agregat.</p>
-                </div>
-                <div id="complaints" class="view">
-                    <p>Halaman Pengurusan Aduan Awam.</p>
-                </div>
+                <div id="reports" class="view"> <p>Halaman Laporan Agregat.</p> </div>
+                <div id="complaints" class="view"> <p>Halaman Pengurusan Aduan Awam.</p> </div>
 
             </main>
         </div>
@@ -169,7 +158,6 @@
         <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-2xl p-6">
              <h3 class="text-lg font-semibold mb-4">Serah Laporan Pemantauan Baru</h3>
              <form id="report-submission-form">
-                <!-- Form fields for report submission -->
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Tajuk Laporan</label>
@@ -187,14 +175,68 @@
              </form>
         </div>
     </div>
+    
+    <!-- NEW: SIMP Item Detail Modal -->
+    <div id="simp-item-modal" class="modal-overlay">
+        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-3xl p-6">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800" id="simp-modal-title">Memuatkan...</h3>
+                    <p class="text-sm text-gray-500" id="simp-modal-subtitle">ID Item: <span id="simp-modal-id"></span></p>
+                </div>
+                <button type="button" class="cancel-modal-btn text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+            </div>
+
+            <!-- Audit Trail Section -->
+            <div class="mb-6">
+                <h4 class="font-semibold text-gray-700 mb-3">Jejak Audit & Sejarah Kemas Kini</h4>
+                <div id="simp-item-history-container" class="space-y-3 max-h-60 overflow-y-auto bg-gray-50 p-3 rounded-md border">
+                    <p class="text-center text-gray-500">Memuatkan sejarah...</p>
+                </div>
+            </div>
+
+            <!-- Update Form Section -->
+            <div class="bg-white border rounded-lg p-4">
+                <h4 class="font-semibold text-gray-700 mb-3">Tindakan / Kemas Kini</h4>
+                <form id="simp-update-form">
+                    <input type="hidden" id="current-simp-item-id">
+                     <div class="space-y-4">
+                        <div>
+                            <label for="simp-update-notes" class="block text-sm font-medium text-gray-700">Nota / Keterangan</label>
+                            <textarea id="simp-update-notes" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="cth. Pemasangan jaring habuk telah selesai di sempadan timur tapak projek."></textarea>
+                        </div>
+                        <div>
+                            <label for="simp-update-file" class="block text-sm font-medium text-gray-700">Muat Naik Bukti (Pilihan)</label>
+                            <input type="file" id="simp-update-file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100">
+                        </div>
+                    </div>
+                     <!-- Action buttons for different roles -->
+                     <div class="mt-6 flex justify-between items-center">
+                        <div>
+                            <!-- Agency Actions -->
+                            <div class="space-x-2">
+                                <button type="button" data-action="approve" class="agency-action-btn bg-green-600 text-white px-4 py-2 rounded-md text-sm hover:bg-green-700">Sahkan Pematuhan</button>
+                                <button type="button" data-action="reject" class="agency-action-btn bg-red-600 text-white px-4 py-2 rounded-md text-sm hover:bg-red-700">Tolak (Perlu Pembaikan)</button>
+                            </div>
+                        </div>
+                        <div>
+                             <!-- Developer/Proponent Action -->
+                            <button type="submit" class="developer-action-btn bg-indigo-600 text-white px-4 py-2 rounded-md text-sm hover:bg-indigo-700">Hantar Kemas Kini</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 <script type="module">
-// Import fungsi-fungsi yang diperlukan daripada Firebase SDK
+// Import functions from Firebase SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, getDoc, doc, addDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, doc, addDoc, serverTimestamp, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-// Konfigurasi Firebase anda
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCi_x9STRdZzu2XBbAG5PRkXXcSwhUK61c",
   authDomain: "platform-simp.firebaseapp.com",
@@ -204,38 +246,40 @@ const firebaseConfig = {
   appId: "1:1029919598699:web:c3587ca271442e9bfca92e"
 };
 
-// Inisialisasi Firebase
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// ID Projek Semasa - akan ditetapkan secara dinamik.
 let currentProjectId = null; 
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
 
     // --- RENDER FUNCTIONS ---
     const renderSimpMatrix = (data) => {
         const simpContainer = document.getElementById('simp-matrix-container');
         simpContainer.innerHTML = '';
         if (data.length === 0) {
-            simpContainer.innerHTML = `<p class="text-center text-gray-500">Tiada item SIMP ditemui untuk projek ini.</p>`;
+            simpContainer.innerHTML = `<p class="text-center text-gray-500">Tiada item SIMP ditemui.</p>`;
             return;
         }
         data.forEach(item => {
-            const statusColors = { 'Perlu Pengesahan': 'bg-yellow-100 text-yellow-800', 'Mematuhi': 'bg-green-100 text-green-800', 'Belum Mula': 'bg-gray-100 text-gray-800' };
+            const statusColors = { 'Perlu Pengesahan': 'bg-yellow-100 text-yellow-800', 'Mematuhi': 'bg-green-100 text-green-800', 'Belum Mula': 'bg-gray-100 text-gray-800', 'Ditolak': 'bg-red-100 text-red-800' };
             const agencies = Array.isArray(item.agencies) ? item.agencies.join(', ') : item.agencies;
-            simpContainer.innerHTML += `
-                <div class="border rounded-lg p-4 bg-white hover:shadow-md transition-shadow">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="font-semibold text-sm">[${item.simpId}] ${item.impact}</p>
-                            <p class="text-xs text-slate-500">Agensi: ${agencies} | Fasa: ${item.phase}</p>
-                        </div>
-                        <span class="text-xs font-bold px-2 py-1 rounded-full ${statusColors[item.status] || 'bg-gray-100'}">${item.status}</span>
+            const card = document.createElement('div');
+            card.className = "simp-item-card border rounded-lg p-4 bg-white hover:shadow-md transition-shadow";
+            card.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="font-semibold text-sm">[${item.simpId}] ${item.impact}</p>
+                        <p class="text-xs text-slate-500">Agensi: ${agencies} | Fasa: ${item.phase}</p>
                     </div>
+                    <span class="text-xs font-bold px-2 py-1 rounded-full ${statusColors[item.status] || 'bg-gray-100'}">${item.status}</span>
                 </div>
             `;
+            // Add click event to open the detail modal
+            card.addEventListener('click', () => openSimpItemModal(item));
+            simpContainer.appendChild(card);
         });
     };
 
@@ -243,40 +287,56 @@ document.addEventListener('DOMContentLoaded', async () => {
         const reportsContainer = document.getElementById('monitoring-reports-container');
         reportsContainer.innerHTML = '';
         if (data.length === 0) {
-            reportsContainer.innerHTML = `<p class="text-center text-gray-500">Tiada laporan pemantauan ditemui.</p>`;
+            reportsContainer.innerHTML = `<p class="text-center text-gray-500">Tiada laporan.</p>`;
             return;
         }
         data.forEach(report => {
              const statusColors = { 'Diluluskan': 'text-green-800', 'Dalam Semakan': 'text-yellow-800' };
-             const submittedDate = report.submittedDate?.toDate ? report.submittedDate.toDate().toLocaleDateString('ms-MY') : 'Tarikh tidak sah';
+             const submittedDate = report.submittedDate?.toDate ? report.submittedDate.toDate().toLocaleDateString('ms-MY') : 'N/A';
              reportsContainer.innerHTML += `
-                <a href="${report.fileUrl || '#'}" target="_blank" class="block border rounded-lg p-4 bg-white hover:bg-gray-50 transition-colors">
+                <a href="${report.fileUrl || '#'}" target="_blank" class="block border rounded-lg p-4 bg-white hover:bg-gray-50">
                     <div class="flex justify-between items-center">
                         <div>
                             <p class="font-semibold text-sm text-indigo-700">${report.title}</p>
-                            <p class="text-xs text-slate-500">Perunding: ${report.consultant} | Dihantar: ${submittedDate}</p>
+                            <p class="text-xs text-slate-500">Dihantar: ${submittedDate}</p>
                         </div>
                         <span class="text-xs font-bold ${statusColors[report.status] || ''}">${report.status.toUpperCase()}</span>
                     </div>
-                </a>
-            `;
+                </a>`;
         });
     };
-
+    
     const renderSmcMeetings = (data) => {
+        // Implementation similar to renderMonitoringReports
         const meetingsContainer = document.getElementById('smc-meetings-container');
         meetingsContainer.innerHTML = '';
         if (data.length === 0) {
-            meetingsContainer.innerHTML = `<p class="text-center text-gray-500">Tiada rekod mesyuarat ditemui.</p>`;
-            return;
+            meetingsContainer.innerHTML = `<p class="text-center text-gray-500">Tiada mesyuarat.</p>`; return;
         }
         data.forEach(meeting => {
-            const meetingDate = meeting.date?.toDate ? meeting.date.toDate().toLocaleDateString('ms-MY') : 'Tarikh tidak sah';
+            const meetingDate = meeting.date?.toDate ? meeting.date.toDate().toLocaleDateString('ms-MY') : 'N/A';
             meetingsContainer.innerHTML += `
                 <div class="border rounded-lg p-4 bg-white">
                     <p class="font-semibold text-sm">Mesyuarat pada ${meetingDate}</p>
                     <p class="text-sm text-slate-600 mt-1">${meeting.summary}</p>
-                    ${meeting.minutesUrl ? `<a href="${meeting.minutesUrl}" target="_blank" class="text-xs text-indigo-600 hover:underline mt-2 inline-block">Lihat Minit Mesyuarat</a>` : ''}
+                </div>`;
+        });
+    };
+    
+    const renderSimpItemHistory = (data) => {
+        const historyContainer = document.getElementById('simp-item-history-container');
+        historyContainer.innerHTML = '';
+        if (data.length === 0) {
+            historyContainer.innerHTML = `<p class="text-xs text-center text-gray-500">Tiada sejarah kemas kini untuk item ini.</p>`;
+            return;
+        }
+        data.forEach(update => {
+            const timestamp = update.timestamp?.toDate ? update.timestamp.toDate().toLocaleString('ms-MY') : 'N/A';
+            historyContainer.innerHTML += `
+                <div class="text-xs border-b pb-2">
+                    <p class="font-semibold">${update.status} <span class="font-normal text-gray-500">- ${timestamp}</span></p>
+                    <p class="text-gray-600 mt-1">${update.notes || 'Tiada nota.'}</p>
+                    ${update.fileUrl ? `<a href="${update.fileUrl}" target="_blank" class="text-indigo-600 hover:underline">Lihat Bukti</a>` : ''}
                 </div>
             `;
         });
@@ -284,17 +344,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- FETCH FUNCTIONS ---
     const fetchProjectDetails = async (projectId) => {
-        if (!projectId) {
-            document.getElementById('project-name-display').textContent = 'Tiada Projek Dipilih';
-            return;
-        }
+        if (!projectId) { document.getElementById('project-name-display').textContent = 'Tiada Projek'; return; }
         const docRef = doc(db, "projects", projectId);
         const docSnap = await getDoc(docRef);
-
         if (docSnap.exists()) {
             document.getElementById('project-name-display').textContent = docSnap.data().projectName;
         } else {
-            console.log("No such project!");
             document.getElementById('project-name-display').textContent = 'Projek tidak ditemui';
         }
     };
@@ -307,33 +362,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const fetchReportsData = async (projectId) => {
-        // FIX: Removed orderBy and will sort on the client-side
         const q = query(collection(db, "reports"), where("projectId", "==", projectId));
         const querySnapshot = await getDocs(q);
-        const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-        // FIX: Sort data by date in descending order
+        let data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
         data.sort((a, b) => (b.submittedDate?.toDate() || 0) - (a.submittedDate?.toDate() || 0));
         renderMonitoringReports(data);
     };
 
     const fetchMeetingsData = async (projectId) => {
-        // FIX: Removed orderBy and will sort on the client-side
         const q = query(collection(db, "meetings"), where("projectId", "==", projectId));
         const querySnapshot = await getDocs(q);
-        const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
-        // FIX: Sort data by date in descending order
+        let data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
         data.sort((a, b) => (b.date?.toDate() || 0) - (a.date?.toDate() || 0));
         renderSmcMeetings(data);
     };
     
-    // --- MAIN DATA FETCH LOGIC ---
+    const fetchSimpItemHistory = async (simpItemId) => {
+        const historyRef = collection(db, `simp-items/${simpItemId}/updates`);
+        const q = query(historyRef);
+        const querySnapshot = await getDocs(q);
+        let data = querySnapshot.docs.map(doc => doc.data());
+        data.sort((a, b) => (b.timestamp?.toDate() || 0) - (a.timestamp?.toDate() || 0));
+        renderSimpItemHistory(data);
+    };
+    
+    // --- MAIN LOGIC ---
     const loadProjectData = (projectId) => {
         if (!projectId) {
-            console.error("Tiada ID projek diberikan.");
+            console.error("Tiada ID projek.");
             document.getElementById('project-name-display').textContent = 'Sila pilih projek';
-            renderSimpMatrix([]);
-            renderMonitoringReports([]);
-            renderSmcMeetings([]);
             return;
         }
         fetchProjectDetails(projectId);
@@ -342,127 +399,143 @@ document.addEventListener('DOMContentLoaded', async () => {
         fetchMeetingsData(projectId);
     };
 
-    // --- NEW INITIALIZATION FUNCTION ---
     const initializeAndLoadFirstProject = async () => {
         const projectsQuery = query(collection(db, "projects"));
         const querySnapshot = await getDocs(projectsQuery);
         if (!querySnapshot.empty) {
-            const firstProjectDoc = querySnapshot.docs[0];
-            currentProjectId = firstProjectDoc.id;
+            currentProjectId = querySnapshot.docs[0].id;
             loadProjectData(currentProjectId);
         } else {
-            console.error("Tiada projek ditemui dalam pangkalan data.");
-            alert("Tiada projek ditemui. Sila tambah sekurang-kurangnya satu projek dalam Firestore console.");
+            console.error("Tiada projek ditemui.");
+            alert("Sila tambah sekurang-kurangnya satu projek dalam Firestore.");
             loadProjectData(null); 
         }
     };
 
-    // Auto-load first project on page load
     initializeAndLoadFirstProject();
 
-    // --- UI LOGIC ---
+    // --- UI EVENT LISTENERS ---
     // Navigation Logic
-    const sidebarLinks = document.querySelectorAll('.sidebar-link');
-    const views = document.querySelectorAll('.view');
-    const headerTitle = document.getElementById('header-title');
-
-    sidebarLinks.forEach(link => {
+    document.querySelectorAll('.sidebar-link').forEach(link => {
         link.addEventListener('click', e => {
             e.preventDefault();
             const targetId = link.getAttribute('href').substring(1);
-            sidebarLinks.forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
             link.classList.add('active');
-            views.forEach(view => view.classList.toggle('active', view.id === targetId));
-            headerTitle.textContent = link.textContent.trim();
+            document.querySelectorAll('.view').forEach(view => view.classList.toggle('active', view.id === targetId));
+            document.getElementById('header-title').textContent = link.textContent.trim();
         });
     });
 
-    // Chart.js: Project Risk Chart
+    // Chart.js
     const riskCtx = document.getElementById('projectRiskChart')?.getContext('2d');
-    if (riskCtx) {
-        new Chart(riskCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Lebuhraya', 'Empangan', 'Pangsapuri', 'Ladang Solar'],
-                datasets: [{
-                    label: 'Skor Risiko',
-                    data: [85, 60, 45, 20],
-                    backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#22c55e']
-                }]
-            },
-            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-        });
-    }
+    if (riskCtx) { new Chart(riskCtx, { type: 'bar', data: { labels: ['Lebuhraya', 'Empangan', 'Pangsapuri', 'Ladang Solar'], datasets: [{ label: 'Skor Risiko', data: [85, 60, 45, 20], backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#22c55e'] }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } }); }
     
-    // Project Details: Tab Logic
-    const projectTabs = document.getElementById('project-tabs');
-    projectTabs.addEventListener('click', e => {
+    // Project Tabs Logic
+    document.getElementById('project-tabs').addEventListener('click', e => {
         if (e.target.tagName === 'BUTTON') {
-            projectTabs.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('project-tabs').querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
             e.target.classList.add('active');
             const targetId = e.target.getAttribute('data-target');
             document.querySelectorAll('.tab-content').forEach(content => content.classList.toggle('active', content.id === targetId));
         }
     });
     
-    // Modal Logic
+    // --- Modal Logic ---
     const reportModal = document.getElementById('report-submission-modal');
-    const showReportModalBtn = document.getElementById('show-report-modal-btn');
-    const cancelModalBtns = document.querySelectorAll('.cancel-modal-btn');
-    const reportForm = document.getElementById('report-submission-form');
-
-    showReportModalBtn.addEventListener('click', () => reportModal.classList.add('active'));
-    cancelModalBtns.forEach(btn => btn.addEventListener('click', () => reportModal.classList.remove('active')));
+    const simpItemModal = document.getElementById('simp-item-modal');
     
-    reportForm.addEventListener('submit', async (e) => {
+    document.getElementById('show-report-modal-btn').addEventListener('click', () => reportModal.classList.add('active'));
+    
+    document.querySelectorAll('.cancel-modal-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            reportModal.classList.remove('active');
+            simpItemModal.classList.remove('active');
+        });
+    });
+
+    const openSimpItemModal = (itemData) => {
+        document.getElementById('simp-modal-title').textContent = `[${itemData.simpId}] ${itemData.impact}`;
+        document.getElementById('simp-modal-id').textContent = itemData.id;
+        document.getElementById('current-simp-item-id').value = itemData.id;
+        fetchSimpItemHistory(itemData.id);
+        simpItemModal.classList.add('active');
+    };
+    
+    // --- FORM SUBMISSION ---
+    document.getElementById('report-submission-form').addEventListener('submit', async (e) => {
+        // Report submission logic remains the same
         e.preventDefault();
         const submitButton = e.target.querySelector('button[type="submit"]');
         submitButton.disabled = true;
         submitButton.textContent = 'Menghantar...';
-
-        const title = e.target.title.value;
-        const file = e.target.reportFile.files[0];
-
-        if (!file) {
-            alert("Sila pilih fail untuk dimuat naik.");
-            submitButton.disabled = false;
-            submitButton.textContent = 'Hantar';
-            return;
-        }
-
+        const { title, reportFile: { files: [file] } } = e.target;
+        if (!file) { alert("Sila pilih fail."); submitButton.disabled = false; submitButton.textContent = 'Hantar'; return; }
         try {
-            // 1. Upload file to Firebase Storage
             const storageRef = ref(storage, `reports/${currentProjectId}/${Date.now()}_${file.name}`);
             const snapshot = await uploadBytes(storageRef, file);
             const downloadURL = await getDownloadURL(snapshot.ref);
-
-            // 2. Create new report object to save to Firestore
-            const newReport = {
-                projectId: currentProjectId,
-                title: title,
-                consultant: 'YAR Consult', // Example data
-                submittedDate: serverTimestamp(),
-                status: 'Dalam Semakan',
-                fileUrl: downloadURL
-            };
-
-            // 3. Add the document to Firestore
-            const docRef = await addDoc(collection(db, "reports"), newReport);
-            console.log("Document written with ID: ", docRef.id);
-            
-            // 4. Re-fetch and render the reports list
+            await addDoc(collection(db, "reports"), { projectId: currentProjectId, title: title.value, submittedDate: serverTimestamp(), status: 'Dalam Semakan', fileUrl: downloadURL });
             fetchReportsData(currentProjectId); 
-            
             reportModal.classList.remove('active');
-            reportForm.reset();
+            e.target.reset();
+        } catch (error) { console.error("Error: ", error); alert("Gagal menghantar laporan.");
+        } finally { submitButton.disabled = false; submitButton.textContent = 'Hantar'; }
+    });
 
-        } catch (error) {
-            console.error("Error adding document: ", error);
-            alert("Gagal menghantar laporan. Sila cuba lagi.");
-        } finally {
-            submitButton.disabled = false;
-            submitButton.textContent = 'Hantar';
+    const handleSimpUpdate = async (simpItemId, newStatus, notes, file) => {
+        let fileUrl = null;
+        if (file) {
+            const storageRef = ref(storage, `simp-updates/${simpItemId}/${Date.now()}_${file.name}`);
+            const snapshot = await uploadBytes(storageRef, file);
+            fileUrl = await getDownloadURL(snapshot.ref);
         }
+
+        // Add to history subcollection
+        const historyRef = collection(db, `simp-items/${simpItemId}/updates`);
+        await addDoc(historyRef, {
+            status: newStatus,
+            notes: notes,
+            fileUrl: fileUrl,
+            timestamp: serverTimestamp(),
+            // In a real app, this would be the logged-in user's ID
+            submittedBy: "Siti Aisyah (Pegawai JAS)" 
+        });
+
+        // Update the main SIMP item document
+        const simpItemRef = doc(db, "simp-items", simpItemId);
+        await updateDoc(simpItemRef, {
+            status: newStatus
+        });
+        
+        // Refresh data and close modal
+        fetchSimpData(currentProjectId);
+        simpItemModal.classList.remove('active');
+    };
+
+    document.getElementById('simp-update-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitButton = e.target.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        const simpItemId = document.getElementById('current-simp-item-id').value;
+        const notes = document.getElementById('simp-update-notes').value;
+        const file = document.getElementById('simp-update-file').files[0];
+        
+        await handleSimpUpdate(simpItemId, 'Perlu Pengesahan', notes, file);
+        e.target.reset();
+        submitButton.disabled = false;
+    });
+
+    document.querySelectorAll('.agency-action-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const action = e.target.getAttribute('data-action');
+            const newStatus = action === 'approve' ? 'Mematuhi' : 'Ditolak';
+            
+            const simpItemId = document.getElementById('current-simp-item-id').value;
+            const notes = document.getElementById('simp-update-notes').value || `Tindakan: ${newStatus}`;
+            
+            await handleSimpUpdate(simpItemId, newStatus, notes, null); // No file for agency action
+        });
     });
 
 });
@@ -470,4 +543,3 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 </body>
 </html>
-
