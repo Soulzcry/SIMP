@@ -10,16 +10,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals with Professional Blue Accent -->
-    <!-- Application Structure Plan: The application is structured as a multi-faceted, role-based platform. A persistent left-sidebar navigation allows users (e.g., agency officer, developer) to switch between macro-views: Dashboard, Projects, Reports, and Complaints. The core of the application is the Project Detail view, which uses a tabbed interface (SIMP Matrix, Monitoring Reports, SMC Meetings, etc.) to manage the vast amount of information for a single project without overwhelming the user. This architecture was chosen to support complex, real-world workflows, allowing users to drill down from a high-level overview (Dashboard) to granular details (a single SIMP update) in an intuitive and organized manner. -->
-    <!-- Visualization & Content Choices: 
-        - Dashboard: Goal: Inform/Prioritize -> Key metric cards (KPIs), a task list for pending actions, and a bar chart for at-risk projects. Interaction: Clickable links to relevant pages. Justification: Provides an actionable summary for daily use.
-        - SIMP Matrix: Goal: Organize/Monitor -> An interactive, filterable, and collapsible table-like structure. Interaction: Filtering by phase/status, expanding items to see detailed history. Justification: Transforms the static PDF matrix into a live, queryable management tool.
-        - Monitoring Reports: Goal: Manage/Audit -> A dedicated portal for report lifecycle management (submission, review, approval). Interaction: Modals for report submission and review. Justification: Formalizes the crucial third-party monitoring process identified in the fee proposal.
-        - SMC Meetings: Goal: Document/Inform -> A chronological log of meetings with expandable details for minutes and action items. Justification: Creates a transparent audit trail for stakeholder engagement.
-        - Complaints: Goal: Respond/Track -> A map-based and list view of public complaints. Interaction: Filtering and viewing complaint details/status. Justification: Integrates the community feedback loop directly into project management.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8f7f4; }
         .sidebar-link { transition: all 0.2s ease; }
@@ -128,31 +118,34 @@
                 <div id="projects" class="view">
                     <!-- Project List and Details -->
                      <div class="bg-white p-6 rounded-lg shadow">
-                        <h3 class="text-xl font-semibold mb-4">Senarai Projek</h3>
-                        <div id="project-details-view" class="bg-white rounded-lg shadow">
+                        <div class="flex justify-between items-center mb-4">
+                             <h3 class="text-xl font-semibold">Projek: <span id="project-name-display">Memuatkan...</span></h3>
+                             <button class="bg-gray-200 text-sm px-3 py-1 rounded">Tukar Projek</button>
+                        </div>
+                         <div id="project-details-view" class="bg-white rounded-lg border">
                             <!-- Project tabs -->
                             <div class="border-b border-gray-200">
                                 <nav id="project-tabs" class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
-                                    <button data-target="tab-simp-matrix" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm active">Matriks SIMP</button>
-                                    <button data-target="tab-monitoring-reports" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Laporan Pemantauan</button>
-                                    <button data-target="tab-smc-meetings" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Mesyuarat SMC</button>
+                                    <button data-target="tab-simp-matrix" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300 active">Matriks SIMP</button>
+                                    <button data-target="tab-monitoring-reports" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300">Laporan Pemantauan</button>
+                                    <button data-target="tab-smc-meetings" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300">Mesyuarat SMC</button>
                                 </nav>
                             </div>
                             <!-- Tab Content -->
                             <div class="p-6">
                                 <div id="tab-simp-matrix" class="tab-content active">
-                                    <h4 class="font-semibold mb-4">Matriks SIMP - Projek Ladang Solar</h4>
+                                    <h4 class="font-semibold mb-4">Matriks SIMP</h4>
                                     <!-- SIMP Matrix will be rendered here -->
-                                    <div class="space-y-2" id="simp-matrix-container"></div>
+                                    <div class="space-y-2" id="simp-matrix-container"><p class="text-center text-gray-500">Memuatkan data Matriks SIMP...</p></div>
                                 </div>
                                 <div id="tab-monitoring-reports" class="tab-content">
-                                    <h4 class="font-semibold mb-4">Laporan Pemantauan - Projek Ladang Solar</h4>
-                                    <button id="show-report-modal-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm mb-4">Serah Laporan Baru</button>
-                                    <div id="monitoring-reports-container" class="space-y-3"></div>
+                                    <h4 class="font-semibold mb-4">Laporan Pemantauan</h4>
+                                    <button id="show-report-modal-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm mb-4 hover:bg-indigo-700">Serah Laporan Baru</button>
+                                    <div id="monitoring-reports-container" class="space-y-3"><p class="text-center text-gray-500">Memuatkan data laporan...</p></div>
                                 </div>
                                 <div id="tab-smc-meetings" class="tab-content">
-                                    <h4 class="font-semibold mb-4">Mesyuarat SMC - Projek Ladang Solar</h4>
-                                    <div id="smc-meetings-container" class="space-y-3"></div>
+                                    <h4 class="font-semibold mb-4">Mesyuarat SMC</h4>
+                                    <div id="smc-meetings-container" class="space-y-3"><p class="text-center text-gray-500">Memuatkan data mesyuarat...</p></div>
                                 </div>
                             </div>
                         </div>
@@ -180,38 +173,194 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Tajuk Laporan</label>
-                        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="Laporan Pemantauan Suku Ke-4 2025" required>
+                        <input type="text" name="title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="cth. Laporan Pemantauan Suku Ke-4 2025" required>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Muat Naik Laporan Penuh (PDF)</label>
-                        <input type="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100" required>
+                        <input type="file" name="reportFile" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100" required>
                     </div>
                 </div>
                 <div class="mt-6 flex justify-end space-x-3">
-                    <button type="button" class="cancel-modal-btn bg-gray-200 px-4 py-2 rounded-md text-sm">Batal</button>
-                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm">Hantar</button>
+                    <button type="button" class="cancel-modal-btn bg-gray-200 px-4 py-2 rounded-md text-sm hover:bg-gray-300">Batal</button>
+                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm hover:bg-indigo-700">Hantar</button>
                 </div>
              </form>
         </div>
     </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Mock Data based on provided documents
-    const mockSimpData = [
-        { id: '2d', impact: 'Pencemaran udara/masalah habuk...', agencies: 'JAS, MDPT', status: 'Perlu Pengesahan', phase: 'Pembinaan' },
-        { id: '5a', impact: 'Kekhuatiran pekerja asing...', agencies: 'MDPT, IPD', status: 'Mematuhi', phase: 'Pembinaan' },
-        { id: '1d', impact: 'Risiko Strok Haba semasa pemasangan...', agencies: 'PKD', status: 'Mematuhi', phase: 'Pembinaan' },
-        { id: '7a', impact: 'Persetujuan penglibatan agensi...', agencies: 'MDPT', status: 'Belum Mula', phase: 'Operasi' },
-    ];
-    const mockReportsData = [
-        { title: 'Laporan Pemantauan Suku Ke-3 2025', period: 'Apr-Jun 2025', consultant: 'YAR Consult', submitted: '15/07/2025', status: 'Diluluskan' },
-        { title: 'Laporan Awal (Baseline)', period: 'Jan-Mac 2025', consultant: 'YAR Consult', submitted: '15/04/2025', status: 'Diluluskan' },
-    ];
-     const mockMeetingsData = [
-        { date: '20/09/2025', venue: 'Pejabat Daerah Perak Tengah', summary: 'Pembentangan laporan pematuhan S3 & perbincangan isu lalu lintas.' },
-    ];
+<script type="module">
+// Import fungsi-fungsi yang diperlukan daripada Firebase SDK
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, getDoc, doc, addDoc, serverTimestamp, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
+// Konfigurasi Firebase anda
+const firebaseConfig = {
+  apiKey: "AIzaSyCi_x9STRdZzu2XBbAG5PRkXXcSwhUK61c",
+  authDomain: "platform-simp.firebaseapp.com",
+  projectId: "platform-simp",
+  storageBucket: "platform-simp.appspot.com",
+  messagingSenderId: "1029919598699",
+  appId: "1:1029919598699:web:c3587ca271442e9bfca92e"
+};
+
+// Inisialisasi Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+// ID Projek Semasa - akan ditetapkan secara dinamik.
+let currentProjectId = null; 
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+    // --- RENDER FUNCTIONS ---
+    const renderSimpMatrix = (data) => {
+        const simpContainer = document.getElementById('simp-matrix-container');
+        simpContainer.innerHTML = '';
+        if (data.length === 0) {
+            simpContainer.innerHTML = `<p class="text-center text-gray-500">Tiada item SIMP ditemui untuk projek ini.</p>`;
+            return;
+        }
+        data.forEach(item => {
+            const statusColors = { 'Perlu Pengesahan': 'bg-yellow-100 text-yellow-800', 'Mematuhi': 'bg-green-100 text-green-800', 'Belum Mula': 'bg-gray-100 text-gray-800' };
+            const agencies = Array.isArray(item.agencies) ? item.agencies.join(', ') : item.agencies;
+            simpContainer.innerHTML += `
+                <div class="border rounded-lg p-4 bg-white hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-semibold text-sm">[${item.simpId}] ${item.impact}</p>
+                            <p class="text-xs text-slate-500">Agensi: ${agencies} | Fasa: ${item.phase}</p>
+                        </div>
+                        <span class="text-xs font-bold px-2 py-1 rounded-full ${statusColors[item.status] || 'bg-gray-100'}">${item.status}</span>
+                    </div>
+                </div>
+            `;
+        });
+    };
+
+    const renderMonitoringReports = (data) => {
+        const reportsContainer = document.getElementById('monitoring-reports-container');
+        reportsContainer.innerHTML = '';
+        if (data.length === 0) {
+            reportsContainer.innerHTML = `<p class="text-center text-gray-500">Tiada laporan pemantauan ditemui.</p>`;
+            return;
+        }
+        data.forEach(report => {
+             const statusColors = { 'Diluluskan': 'text-green-800', 'Dalam Semakan': 'text-yellow-800' };
+             const submittedDate = report.submittedDate?.toDate ? report.submittedDate.toDate().toLocaleDateString('ms-MY') : 'Tarikh tidak sah';
+             reportsContainer.innerHTML += `
+                <a href="${report.fileUrl || '#'}" target="_blank" class="block border rounded-lg p-4 bg-white hover:bg-gray-50 transition-colors">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-semibold text-sm text-indigo-700">${report.title}</p>
+                            <p class="text-xs text-slate-500">Perunding: ${report.consultant} | Dihantar: ${submittedDate}</p>
+                        </div>
+                        <span class="text-xs font-bold ${statusColors[report.status] || ''}">${report.status.toUpperCase()}</span>
+                    </div>
+                </a>
+            `;
+        });
+    };
+
+    const renderSmcMeetings = (data) => {
+        const meetingsContainer = document.getElementById('smc-meetings-container');
+        meetingsContainer.innerHTML = '';
+        if (data.length === 0) {
+            meetingsContainer.innerHTML = `<p class="text-center text-gray-500">Tiada rekod mesyuarat ditemui.</p>`;
+            return;
+        }
+        data.forEach(meeting => {
+            const meetingDate = meeting.date?.toDate ? meeting.date.toDate().toLocaleDateString('ms-MY') : 'Tarikh tidak sah';
+            meetingsContainer.innerHTML += `
+                <div class="border rounded-lg p-4 bg-white">
+                    <p class="font-semibold text-sm">Mesyuarat pada ${meetingDate}</p>
+                    <p class="text-sm text-slate-600 mt-1">${meeting.summary}</p>
+                    ${meeting.minutesUrl ? `<a href="${meeting.minutesUrl}" target="_blank" class="text-xs text-indigo-600 hover:underline mt-2 inline-block">Lihat Minit Mesyuarat</a>` : ''}
+                </div>
+            `;
+        });
+    };
+
+    // --- FETCH FUNCTIONS ---
+    const fetchProjectDetails = async (projectId) => {
+        if (!projectId) {
+            document.getElementById('project-name-display').textContent = 'Tiada Projek Dipilih';
+            return;
+        }
+        const docRef = doc(db, "projects", projectId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            document.getElementById('project-name-display').textContent = docSnap.data().projectName;
+        } else {
+            console.log("No such project!");
+            document.getElementById('project-name-display').textContent = 'Projek tidak ditemui';
+        }
+    };
+
+    const fetchSimpData = async (projectId) => {
+        const q = query(collection(db, "simp-items"), where("projectId", "==", projectId));
+        const querySnapshot = await getDocs(q);
+        const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+        renderSimpMatrix(data);
+    };
+
+    const fetchReportsData = async (projectId) => {
+        // FIX: Removed orderBy and will sort on the client-side
+        const q = query(collection(db, "reports"), where("projectId", "==", projectId));
+        const querySnapshot = await getDocs(q);
+        const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+        // FIX: Sort data by date in descending order
+        data.sort((a, b) => (b.submittedDate?.toDate() || 0) - (a.submittedDate?.toDate() || 0));
+        renderMonitoringReports(data);
+    };
+
+    const fetchMeetingsData = async (projectId) => {
+        // FIX: Removed orderBy and will sort on the client-side
+        const q = query(collection(db, "meetings"), where("projectId", "==", projectId));
+        const querySnapshot = await getDocs(q);
+        const data = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+        // FIX: Sort data by date in descending order
+        data.sort((a, b) => (b.date?.toDate() || 0) - (a.date?.toDate() || 0));
+        renderSmcMeetings(data);
+    };
+    
+    // --- MAIN DATA FETCH LOGIC ---
+    const loadProjectData = (projectId) => {
+        if (!projectId) {
+            console.error("Tiada ID projek diberikan.");
+            document.getElementById('project-name-display').textContent = 'Sila pilih projek';
+            renderSimpMatrix([]);
+            renderMonitoringReports([]);
+            renderSmcMeetings([]);
+            return;
+        }
+        fetchProjectDetails(projectId);
+        fetchSimpData(projectId);
+        fetchReportsData(projectId);
+        fetchMeetingsData(projectId);
+    };
+
+    // --- NEW INITIALIZATION FUNCTION ---
+    const initializeAndLoadFirstProject = async () => {
+        const projectsQuery = query(collection(db, "projects"));
+        const querySnapshot = await getDocs(projectsQuery);
+        if (!querySnapshot.empty) {
+            const firstProjectDoc = querySnapshot.docs[0];
+            currentProjectId = firstProjectDoc.id;
+            loadProjectData(currentProjectId);
+        } else {
+            console.error("Tiada projek ditemui dalam pangkalan data.");
+            alert("Tiada projek ditemui. Sila tambah sekurang-kurangnya satu projek dalam Firestore console.");
+            loadProjectData(null); 
+        }
+    };
+
+    // Auto-load first project on page load
+    initializeAndLoadFirstProject();
+
+    // --- UI LOGIC ---
     // Navigation Logic
     const sidebarLinks = document.querySelectorAll('.sidebar-link');
     const views = document.querySelectorAll('.view');
@@ -221,12 +370,9 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', e => {
             e.preventDefault();
             const targetId = link.getAttribute('href').substring(1);
-            
             sidebarLinks.forEach(l => l.classList.remove('active'));
             link.classList.add('active');
-
             views.forEach(view => view.classList.toggle('active', view.id === targetId));
-            
             headerTitle.textContent = link.textContent.trim();
         });
     });
@@ -250,58 +396,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Project Details: Tab Logic
     const projectTabs = document.getElementById('project-tabs');
-    const tabContents = document.querySelectorAll('.tab-content');
-
     projectTabs.addEventListener('click', e => {
         if (e.target.tagName === 'BUTTON') {
             projectTabs.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
             e.target.classList.add('active');
-            
             const targetId = e.target.getAttribute('data-target');
-            tabContents.forEach(content => content.classList.toggle('active', content.id === targetId));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.toggle('active', content.id === targetId));
         }
-    });
-
-    // Render SIMP Matrix
-    const simpContainer = document.getElementById('simp-matrix-container');
-    mockSimpData.forEach(item => {
-        const statusColors = { 'Perlu Pengesahan': 'bg-yellow-100 text-yellow-800', 'Mematuhi': 'bg-green-100 text-green-800', 'Belum Mula': 'bg-gray-100 text-gray-800' };
-        simpContainer.innerHTML += `
-            <div class="border rounded-lg p-4 bg-white">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="font-semibold text-sm">[${item.id}] ${item.impact}</p>
-                        <p class="text-xs text-slate-500">Agensi: ${item.agencies} | Fasa: ${item.phase}</p>
-                    </div>
-                    <span class="text-xs font-bold px-2 py-1 rounded-full ${statusColors[item.status]}">${item.status}</span>
-                </div>
-            </div>
-        `;
-    });
-
-    // Render Monitoring Reports
-    const reportsContainer = document.getElementById('monitoring-reports-container');
-    mockReportsData.forEach(report => {
-         reportsContainer.innerHTML += `
-            <div class="border rounded-lg p-4 bg-white flex justify-between items-center">
-                <div>
-                    <p class="font-semibold text-sm">${report.title}</p>
-                    <p class="text-xs text-slate-500">Perunding: ${report.consultant} | Dihantar: ${report.submitted}</p>
-                </div>
-                <span class="text-xs font-bold text-green-800">LIHAT LAPORAN</span>
-            </div>
-        `;
-    });
-
-    // Render SMC Meetings
-    const meetingsContainer = document.getElementById('smc-meetings-container');
-    mockMeetingsData.forEach(meeting => {
-         meetingsContainer.innerHTML += `
-            <div class="border rounded-lg p-4 bg-white">
-                <p class="font-semibold text-sm">Mesyuarat pada ${meeting.date}</p>
-                <p class="text-xs text-slate-500">${meeting.summary}</p>
-            </div>
-        `;
     });
     
     // Modal Logic
@@ -313,27 +414,55 @@ document.addEventListener('DOMContentLoaded', () => {
     showReportModalBtn.addEventListener('click', () => reportModal.classList.add('active'));
     cancelModalBtns.forEach(btn => btn.addEventListener('click', () => reportModal.classList.remove('active')));
     
-    reportForm.addEventListener('submit', e => {
+    reportForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        // Add new report to the list (in a real app, this would be an API call)
-        const newReport = {
-            title: 'Laporan Pemantauan Suku Ke-4 2025',
-            period: 'Jul-Sep 2025',
-            consultant: 'YAR Consult',
-            submitted: new Date().toLocaleDateString('ms-MY'),
-            status: 'Dalam Semakan'
-        };
-        reportsContainer.insertAdjacentHTML('afterbegin', `
-             <div class="border rounded-lg p-4 bg-white flex justify-between items-center">
-                <div>
-                    <p class="font-semibold text-sm">${newReport.title}</p>
-                    <p class="text-xs text-slate-500">Perunding: ${newReport.consultant} | Dihantar: ${newReport.submitted}</p>
-                </div>
-                <span class="text-xs font-bold text-yellow-800">DALAM SEMAKAN</span>
-            </div>
-        `);
-        reportModal.classList.remove('active');
-        reportForm.reset();
+        const submitButton = e.target.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = 'Menghantar...';
+
+        const title = e.target.title.value;
+        const file = e.target.reportFile.files[0];
+
+        if (!file) {
+            alert("Sila pilih fail untuk dimuat naik.");
+            submitButton.disabled = false;
+            submitButton.textContent = 'Hantar';
+            return;
+        }
+
+        try {
+            // 1. Upload file to Firebase Storage
+            const storageRef = ref(storage, `reports/${currentProjectId}/${Date.now()}_${file.name}`);
+            const snapshot = await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(snapshot.ref);
+
+            // 2. Create new report object to save to Firestore
+            const newReport = {
+                projectId: currentProjectId,
+                title: title,
+                consultant: 'YAR Consult', // Example data
+                submittedDate: serverTimestamp(),
+                status: 'Dalam Semakan',
+                fileUrl: downloadURL
+            };
+
+            // 3. Add the document to Firestore
+            const docRef = await addDoc(collection(db, "reports"), newReport);
+            console.log("Document written with ID: ", docRef.id);
+            
+            // 4. Re-fetch and render the reports list
+            fetchReportsData(currentProjectId); 
+            
+            reportModal.classList.remove('active');
+            reportForm.reset();
+
+        } catch (error) {
+            console.error("Error adding document: ", error);
+            alert("Gagal menghantar laporan. Sila cuba lagi.");
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Hantar';
+        }
     });
 
 });
@@ -341,3 +470,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
