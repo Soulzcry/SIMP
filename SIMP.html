@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ms" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Digital SIMP - Versi Penuh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Professional Blue Accent -->
+    <!-- Application Structure Plan: The application is structured as a multi-faceted, role-based platform. A persistent left-sidebar navigation allows users (e.g., agency officer, developer) to switch between macro-views: Dashboard, Projects, Reports, and Complaints. The core of the application is the Project Detail view, which uses a tabbed interface (SIMP Matrix, Monitoring Reports, SMC Meetings, etc.) to manage the vast amount of information for a single project without overwhelming the user. This architecture was chosen to support complex, real-world workflows, allowing users to drill down from a high-level overview (Dashboard) to granular details (a single SIMP update) in an intuitive and organized manner. -->
+    <!-- Visualization & Content Choices: 
+        - Dashboard: Goal: Inform/Prioritize -> Key metric cards (KPIs), a task list for pending actions, and a bar chart for at-risk projects. Interaction: Clickable links to relevant pages. Justification: Provides an actionable summary for daily use.
+        - SIMP Matrix: Goal: Organize/Monitor -> An interactive, filterable, and collapsible table-like structure. Interaction: Filtering by phase/status, expanding items to see detailed history. Justification: Transforms the static PDF matrix into a live, queryable management tool.
+        - Monitoring Reports: Goal: Manage/Audit -> A dedicated portal for report lifecycle management (submission, review, approval). Interaction: Modals for report submission and review. Justification: Formalizes the crucial third-party monitoring process identified in the fee proposal.
+        - SMC Meetings: Goal: Document/Inform -> A chronological log of meetings with expandable details for minutes and action items. Justification: Creates a transparent audit trail for stakeholder engagement.
+        - Complaints: Goal: Respond/Track -> A map-based and list view of public complaints. Interaction: Filtering and viewing complaint details/status. Justification: Integrates the community feedback loop directly into project management.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f7f4; }
+        .sidebar-link { transition: all 0.2s ease; }
+        .sidebar-link:hover, .sidebar-link.active { background-color: #eef2ff; color: #312e81; }
+        .view { display: none; animation: fadeIn 0.5s ease-in-out; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 50; display: none; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .tab-button.active { border-bottom-color: #4f46e5; color: #4f46e5; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <aside class="w-64 flex-shrink-0 bg-white border-r hidden md:block">
+            <div class="p-4 border-b">
+                <h1 class="text-2xl font-bold text-[#2f4b7c]">Platform SIMP</h1>
+            </div>
+            <nav class="p-4 space-y-2">
+                <a href="#dashboard" class="sidebar-link flex items-center p-2 rounded-lg active">
+                    <span class="mr-3">🏠</span> Papan Pemuka
+                </a>
+                <a href="#projects" class="sidebar-link flex items-center p-2 rounded-lg">
+                    <span class="mr-3">🏗️</span> Projek
+                </a>
+                <a href="#reports" class="sidebar-link flex items-center p-2 rounded-lg">
+                    <span class="mr-3">📄</span> Laporan
+                </a>
+                <a href="#complaints" class="sidebar-link flex items-center p-2 rounded-lg">
+                    <span class="mr-3">📢</span> Aduan Awam
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white border-b p-4 flex justify-between items-center">
+                <h2 id="header-title" class="text-xl font-semibold text-slate-800">Papan Pemuka</h2>
+                <div class="flex items-center space-x-4">
+                    <span>🔔<sup class="text-red-500 font-bold">3</sup></span>
+                    <div class="flex items-center">
+                        <img src="https://placehold.co/32x32/E8E8E8/4A4A4A?text=SA" class="w-8 h-8 rounded-full" alt="Imej profil Siti Aisyah">
+                        <div class="ml-2">
+                            <p class="text-sm font-semibold">Siti Aisyah</p>
+                            <p class="text-xs text-slate-500">Pegawai, JAS Perak</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-[#f8f7f4] p-6">
+                
+                <!-- Dashboard View -->
+                <div id="dashboard" class="view active">
+                    <!-- Dashboard content here -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-blue-500">
+                            <h3 class="text-slate-500 text-sm">Projek Aktif Diselia</h3>
+                            <p class="text-3xl font-bold">42</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-yellow-500">
+                            <h3 class="text-slate-500 text-sm">Kemas Kini Perlu Disahkan</h3>
+                            <p class="text-3xl font-bold">15</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow border-l-4 border-red-500">
+                            <h3 class="text-slate-500 text-sm">Aduan Baru Diterima</h3>
+                            <p class="text-3xl font-bold">8</p>
+                        </div>
+                         <div class="bg-white p-5 rounded-lg shadow border-l-4 border-green-500">
+                            <h3 class="text-slate-500 text-sm">Laporan Diluluskan</h3>
+                            <p class="text-3xl font-bold">27</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow">
+                            <h3 class="font-semibold mb-4">Senarai Tugasan Kritikal</h3>
+                            <div class="space-y-4">
+                                <div class="p-3 bg-yellow-100 rounded-md border border-yellow-300">
+                                    <p class="font-semibold text-sm">PENGESAHAN KEMAS KINI</p>
+                                    <p class="text-xs text-slate-600">Projek Ladang Solar - Item #2d (Kawalan Habuk). Dihantar 3 jam lalu.</p>
+                                </div>
+                                <div class="p-3 bg-red-100 rounded-md border border-red-300">
+                                    <p class="font-semibold text-sm">ADUAN BARU</p>
+                                    <p class="text-xs text-slate-600">Projek Pangsapuri Selesa Damai - #CMP-202510-00123 (Kualiti Udara).</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow">
+                            <h3 class="font-semibold mb-4 text-center">Projek Mengikut Tahap Risiko</h3>
+                            <div class="chart-container" style="height: 250px; max-height: 250px;">
+                                <canvas id="projectRiskChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects View -->
+                <div id="projects" class="view">
+                    <!-- Project List and Details -->
+                     <div class="bg-white p-6 rounded-lg shadow">
+                        <h3 class="text-xl font-semibold mb-4">Senarai Projek</h3>
+                        <div id="project-details-view" class="bg-white rounded-lg shadow">
+                            <!-- Project tabs -->
+                            <div class="border-b border-gray-200">
+                                <nav id="project-tabs" class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
+                                    <button data-target="tab-simp-matrix" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm active">Matriks SIMP</button>
+                                    <button data-target="tab-monitoring-reports" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Laporan Pemantauan</button>
+                                    <button data-target="tab-smc-meetings" class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">Mesyuarat SMC</button>
+                                </nav>
+                            </div>
+                            <!-- Tab Content -->
+                            <div class="p-6">
+                                <div id="tab-simp-matrix" class="tab-content active">
+                                    <h4 class="font-semibold mb-4">Matriks SIMP - Projek Ladang Solar</h4>
+                                    <!-- SIMP Matrix will be rendered here -->
+                                    <div class="space-y-2" id="simp-matrix-container"></div>
+                                </div>
+                                <div id="tab-monitoring-reports" class="tab-content">
+                                    <h4 class="font-semibold mb-4">Laporan Pemantauan - Projek Ladang Solar</h4>
+                                    <button id="show-report-modal-btn" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm mb-4">Serah Laporan Baru</button>
+                                    <div id="monitoring-reports-container" class="space-y-3"></div>
+                                </div>
+                                <div id="tab-smc-meetings" class="tab-content">
+                                    <h4 class="font-semibold mb-4">Mesyuarat SMC - Projek Ladang Solar</h4>
+                                    <div id="smc-meetings-container" class="space-y-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                 <!-- Other Views (Reports, Complaints) would go here -->
+                <div id="reports" class="view">
+                    <p>Halaman Laporan Agregat.</p>
+                </div>
+                <div id="complaints" class="view">
+                    <p>Halaman Pengurusan Aduan Awam.</p>
+                </div>
+
+            </main>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    <div id="report-submission-modal" class="modal-overlay">
+        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-2xl p-6">
+             <h3 class="text-lg font-semibold mb-4">Serah Laporan Pemantauan Baru</h3>
+             <form id="report-submission-form">
+                <!-- Form fields for report submission -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Tajuk Laporan</label>
+                        <input type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="Laporan Pemantauan Suku Ke-4 2025" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Muat Naik Laporan Penuh (PDF)</label>
+                        <input type="file" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100" required>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" class="cancel-modal-btn bg-gray-200 px-4 py-2 rounded-md text-sm">Batal</button>
+                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm">Hantar</button>
+                </div>
+             </form>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Mock Data based on provided documents
+    const mockSimpData = [
+        { id: '2d', impact: 'Pencemaran udara/masalah habuk...', agencies: 'JAS, MDPT', status: 'Perlu Pengesahan', phase: 'Pembinaan' },
+        { id: '5a', impact: 'Kekhuatiran pekerja asing...', agencies: 'MDPT, IPD', status: 'Mematuhi', phase: 'Pembinaan' },
+        { id: '1d', impact: 'Risiko Strok Haba semasa pemasangan...', agencies: 'PKD', status: 'Mematuhi', phase: 'Pembinaan' },
+        { id: '7a', impact: 'Persetujuan penglibatan agensi...', agencies: 'MDPT', status: 'Belum Mula', phase: 'Operasi' },
+    ];
+    const mockReportsData = [
+        { title: 'Laporan Pemantauan Suku Ke-3 2025', period: 'Apr-Jun 2025', consultant: 'YAR Consult', submitted: '15/07/2025', status: 'Diluluskan' },
+        { title: 'Laporan Awal (Baseline)', period: 'Jan-Mac 2025', consultant: 'YAR Consult', submitted: '15/04/2025', status: 'Diluluskan' },
+    ];
+     const mockMeetingsData = [
+        { date: '20/09/2025', venue: 'Pejabat Daerah Perak Tengah', summary: 'Pembentangan laporan pematuhan S3 & perbincangan isu lalu lintas.' },
+    ];
+
+    // Navigation Logic
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    const views = document.querySelectorAll('.view');
+    const headerTitle = document.getElementById('header-title');
+
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            
+            sidebarLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+
+            views.forEach(view => view.classList.toggle('active', view.id === targetId));
+            
+            headerTitle.textContent = link.textContent.trim();
+        });
+    });
+
+    // Chart.js: Project Risk Chart
+    const riskCtx = document.getElementById('projectRiskChart')?.getContext('2d');
+    if (riskCtx) {
+        new Chart(riskCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Lebuhraya', 'Empangan', 'Pangsapuri', 'Ladang Solar'],
+                datasets: [{
+                    label: 'Skor Risiko',
+                    data: [85, 60, 45, 20],
+                    backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#22c55e']
+                }]
+            },
+            options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+    }
+    
+    // Project Details: Tab Logic
+    const projectTabs = document.getElementById('project-tabs');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    projectTabs.addEventListener('click', e => {
+        if (e.target.tagName === 'BUTTON') {
+            projectTabs.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            
+            const targetId = e.target.getAttribute('data-target');
+            tabContents.forEach(content => content.classList.toggle('active', content.id === targetId));
+        }
+    });
+
+    // Render SIMP Matrix
+    const simpContainer = document.getElementById('simp-matrix-container');
+    mockSimpData.forEach(item => {
+        const statusColors = { 'Perlu Pengesahan': 'bg-yellow-100 text-yellow-800', 'Mematuhi': 'bg-green-100 text-green-800', 'Belum Mula': 'bg-gray-100 text-gray-800' };
+        simpContainer.innerHTML += `
+            <div class="border rounded-lg p-4 bg-white">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="font-semibold text-sm">[${item.id}] ${item.impact}</p>
+                        <p class="text-xs text-slate-500">Agensi: ${item.agencies} | Fasa: ${item.phase}</p>
+                    </div>
+                    <span class="text-xs font-bold px-2 py-1 rounded-full ${statusColors[item.status]}">${item.status}</span>
+                </div>
+            </div>
+        `;
+    });
+
+    // Render Monitoring Reports
+    const reportsContainer = document.getElementById('monitoring-reports-container');
+    mockReportsData.forEach(report => {
+         reportsContainer.innerHTML += `
+            <div class="border rounded-lg p-4 bg-white flex justify-between items-center">
+                <div>
+                    <p class="font-semibold text-sm">${report.title}</p>
+                    <p class="text-xs text-slate-500">Perunding: ${report.consultant} | Dihantar: ${report.submitted}</p>
+                </div>
+                <span class="text-xs font-bold text-green-800">LIHAT LAPORAN</span>
+            </div>
+        `;
+    });
+
+    // Render SMC Meetings
+    const meetingsContainer = document.getElementById('smc-meetings-container');
+    mockMeetingsData.forEach(meeting => {
+         meetingsContainer.innerHTML += `
+            <div class="border rounded-lg p-4 bg-white">
+                <p class="font-semibold text-sm">Mesyuarat pada ${meeting.date}</p>
+                <p class="text-xs text-slate-500">${meeting.summary}</p>
+            </div>
+        `;
+    });
+    
+    // Modal Logic
+    const reportModal = document.getElementById('report-submission-modal');
+    const showReportModalBtn = document.getElementById('show-report-modal-btn');
+    const cancelModalBtns = document.querySelectorAll('.cancel-modal-btn');
+    const reportForm = document.getElementById('report-submission-form');
+
+    showReportModalBtn.addEventListener('click', () => reportModal.classList.add('active'));
+    cancelModalBtns.forEach(btn => btn.addEventListener('click', () => reportModal.classList.remove('active')));
+    
+    reportForm.addEventListener('submit', e => {
+        e.preventDefault();
+        // Add new report to the list (in a real app, this would be an API call)
+        const newReport = {
+            title: 'Laporan Pemantauan Suku Ke-4 2025',
+            period: 'Jul-Sep 2025',
+            consultant: 'YAR Consult',
+            submitted: new Date().toLocaleDateString('ms-MY'),
+            status: 'Dalam Semakan'
+        };
+        reportsContainer.insertAdjacentHTML('afterbegin', `
+             <div class="border rounded-lg p-4 bg-white flex justify-between items-center">
+                <div>
+                    <p class="font-semibold text-sm">${newReport.title}</p>
+                    <p class="text-xs text-slate-500">Perunding: ${newReport.consultant} | Dihantar: ${newReport.submitted}</p>
+                </div>
+                <span class="text-xs font-bold text-yellow-800">DALAM SEMAKAN</span>
+            </div>
+        `);
+        reportModal.classList.remove('active');
+        reportForm.reset();
+    });
+
+});
+</script>
+
+</body>
+</html>
