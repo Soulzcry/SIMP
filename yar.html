@@ -11,25 +11,34 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB; /* Latar belakang sedikit kelabu */
         }
         .filter-btn {
             transition: all 0.3s ease;
         }
         .filter-btn.active {
-            background-color: #001933; /* Deep Blue */
+            background-color: #0E3C45; /* Warna tema baru */
             color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
         .project-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: block; /* Ensure it's visible by default */
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
         }
         .project-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
+        /* Kelas untuk animasi sembunyikan kad */
+        .project-card.hiding {
+            opacity: 0;
+            transform: scale(0.95);
+        }
     </style>
 </head>
-<body class="bg-gray-50">
+<body>
 
     <div class="container mx-auto px-4 py-16">
 
@@ -37,7 +46,7 @@
         <section id="projects">
             <!-- 4.1. Portfolio Introduction -->
             <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Our Track Record</h2>
+                <h2 class="text-3xl md:text-4xl font-bold" style="color: #0E3C45;">Our Track Record</h2>
                 <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
                     Since our establishment, we have been entrusted by various leading organizations to conduct SIA studies for large-scale and complex projects. Our portfolio spans multiple sectors and states, proving our ability to adapt to the unique challenges of each development.
                 </p>
@@ -45,13 +54,14 @@
 
             <!-- 4.2. Project Filters -->
             <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-12">
-                <button class="filter-btn active py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200 shadow-sm" onclick="filterProjects('all')">All</button>
-                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200 shadow-sm" onclick="filterProjects('industrial')">Industrial</button>
-                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200 shadow-sm" onclick="filterProjects('housing')">Housing</button>
-                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200 shadow-sm" onclick="filterProjects('commercial')">Commercial</button>
-                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200 shadow-sm" onclick="filterProjects('selangor')">Selangor</button>
-                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200 shadow-sm" onclick="filterProjects('melaka')">Melaka</button>
-                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200 shadow-sm" onclick="filterProjects('pahang')">Pahang</button>
+                <button class="filter-btn active py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('all')">All</button>
+                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('industrial')">Industrial</button>
+                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('housing')">Housing</button>
+                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('commercial')">Commercial</button>
+                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('other')">Others</button>
+                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('selangor')">Selangor</button>
+                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('melaka')">Melaka</button>
+                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('pahang')">Pahang</button>
             </div>
 
             <!-- 4.3. Project Gallery -->
@@ -59,10 +69,10 @@
                 
                 <!-- Sample Project 1 -->
                 <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="commercial selangor">
-                    <img src="https://placehold.co/600x400/3B82F6/FFFFFF?text=Mixed-Use+Dev" alt="Project Image" class="w-full h-48 object-cover">
+                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Mixed-Use+Dev" alt="Project Image" class="w-full h-48 object-cover">
                     <div class="p-6">
                         <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Commercial</span>
+                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Commercial</span>
                            <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-1">Mixed-Use Development in Shah Alam</h3>
@@ -75,10 +85,10 @@
 
                 <!-- Sample Project 2 -->
                 <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="industrial selangor">
-                    <img src="https://placehold.co/600x400/10B981/FFFFFF?text=Industrial+Park" alt="Project Image" class="w-full h-48 object-cover">
+                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Industrial+Park" alt="Project Image" class="w-full h-48 object-cover">
                     <div class="p-6">
                         <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Industrial</span>
+                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Industrial</span>
                            <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-1">Industrial Development in Puncak Alam</h3>
@@ -91,10 +101,10 @@
 
                 <!-- Sample Project 3 -->
                 <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="housing selangor">
-                    <img src="https://placehold.co/600x400/F59E0B/FFFFFF?text=Housing+Dev" alt="Project Image" class="w-full h-48 object-cover">
+                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Housing+Dev" alt="Project Image" class="w-full h-48 object-cover">
                     <div class="p-6">
                         <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Housing</span>
+                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Housing</span>
                            <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-1">Housing Development in Bukit Raja</h3>
@@ -104,13 +114,45 @@
                         </p>
                     </div>
                 </div>
+                
+                <!-- New Project: CLQ Bangi -->
+                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="other selangor">
+                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=CLQ+Bangi" alt="Project Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-2">
+                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Others</span>
+                           <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-1">Centralised Labour Quarters (CLQ) in Bangi</h3>
+                        <p class="text-sm text-gray-500 mb-4">Client: PKNS</p>
+                        <p class="text-gray-700 text-base">
+                           SIA for a CLQ project, focusing on the social integration of foreign workers and its impact on local community services and infrastructure.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- New Project: Shrimp Aquaculture -->
+                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="other selangor">
+                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Shrimp+Farm" alt="Project Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-2">
+                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Others</span>
+                           <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-1">Shrimp Aquaculture Farm</h3>
+                        <p class="text-sm text-gray-500 mb-4">Client: Galaksi Langat Sdn Bhd</p>
+                        <p class="text-gray-700 text-base">
+                            Social impact evaluation for a large-scale shrimp farm, assessing impacts on local fishermen livelihoods and water resource usage.
+                        </p>
+                    </div>
+                </div>
 
                 <!-- Sample Project 4 -->
                 <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="commercial melaka">
-                    <img src="https://placehold.co/600x400/8B5CF6/FFFFFF?text=Mixed+Dev" alt="Project Image" class="w-full h-48 object-cover">
+                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Mixed+Dev" alt="Project Image" class="w-full h-48 object-cover">
                     <div class="p-6">
                         <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Commercial</span>
+                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Commercial</span>
                            <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Melaka</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-1">Mixed Development in Durian Tunggal</h3>
@@ -123,10 +165,10 @@
 
                 <!-- Sample Project 5 -->
                 <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="industrial melaka">
-                    <img src="https://placehold.co/600x400/EF4444/FFFFFF?text=Industrial+Zone" alt="Project Image" class="w-full h-48 object-cover">
+                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Industrial+Zone" alt="Project Image" class="w-full h-48 object-cover">
                     <div class="p-6">
                          <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Industrial</span>
+                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Industrial</span>
                            <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Melaka</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-1">Industrial Park Development in Jasin</h3>
@@ -139,16 +181,32 @@
                 
                 <!-- Sample Project 6 -->
                 <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="housing pahang">
-                    <img src="https://placehold.co/600x400/0EA5E9/FFFFFF?text=Resort+Housing" alt="Project Image" class="w-full h-48 object-cover">
+                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Resort+Housing" alt="Project Image" class="w-full h-48 object-cover">
                     <div class="p-6">
                         <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-sky-100 text-sky-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Housing</span>
+                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Housing</span>
                            <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Pahang</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 mb-1">Housing Development in Cameron Highlands</h3>
                         <p class="text-sm text-gray-500 mb-4">Client: Highlands Jaya Sdn Bhd</p>
                         <p class="text-gray-700 text-base">
                             Sensitive SIA study for a housing project in an environmentally and socially unique area, ensuring sustainable development practices.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- New Project: CLQ Melaka -->
+                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="other melaka">
+                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=CLQ+Melaka" alt="Project Image" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <div class="flex items-center gap-2 mb-2">
+                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Others</span>
+                           <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Melaka</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-1">Centralised Labour Quarters (CLQ) in Ayer Keroh</h3>
+                        <p class="text-sm text-gray-500 mb-4">Client: Vista Atlas</p>
+                        <p class="text-gray-700 text-base">
+                           Assessment for a CLQ project ensuring proper living standards and minimal social friction with the surrounding residential areas.
                         </p>
                     </div>
                 </div>
@@ -161,27 +219,32 @@
     <script>
         function filterProjects(category) {
             const gallery = document.getElementById('project-gallery');
-            const projects = gallery.getElementsByClassName('project-card');
+            const projects = Array.from(gallery.getElementsByClassName('project-card'));
             const buttons = document.getElementsByClassName('filter-btn');
 
-            // Update active state for buttons
-            for (let btn of buttons) {
-                if (btn.innerText.toLowerCase() === category || (category === 'all' && btn.innerText === 'All')) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            }
+            // Kemas kini status aktif untuk butang
+            for (let btn of buttons) { btn.classList.remove('active'); }
+            const activeButton = Array.from(buttons).find(btn => btn.getAttribute('onclick') === `filterProjects('${category}')`);
+            if (activeButton) { activeButton.classList.add('active'); }
             
-            // Filter project cards
-            for (let i = 0; i < projects.length; i++) {
-                const project = projects[i];
-                if (category === 'all' || project.dataset.category.includes(category)) {
+            // Tapis kad projek dengan animasi
+            projects.forEach(project => {
+                const isMatch = category === 'all' || project.dataset.category.includes(category);
+
+                if (isMatch) {
+                    // Jika sepadan, paparkan semula
                     project.style.display = 'block';
+                    setTimeout(() => {
+                        project.classList.remove('hiding'); // Mulakan animasi fade-in
+                    }, 10); // Lengah sedikit untuk membenarkan 'display' dikemas kini
                 } else {
-                    project.style.display = 'none';
+                    // Jika tidak sepadan, sembunyikan
+                    project.classList.add('hiding'); // Mulakan animasi fade-out
+                    setTimeout(() => {
+                        project.style.display = 'none'; // Sembunyikan elemen selepas animasi
+                    }, 300); // Mesti sepadan dengan tempoh transisi CSS (0.3s)
                 }
-            }
+            });
         }
     </script>
 
