@@ -1,253 +1,415 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Portfolio - YAR Consult</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F9FAFB; /* Latar belakang sedikit kelabu */
-        }
-        .filter-btn {
-            transition: all 0.3s ease;
-        }
-        .filter-btn.active {
-            background-color: #0E3C45; /* Warna tema baru */
-            color: white;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        .project-card {
-            display: block;
-            opacity: 1;
-            transform: scale(1);
-            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
-        }
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        /* Kelas untuk animasi sembunyikan kad */
-        .project-card.hiding {
-            opacity: 0;
-            transform: scale(0.95);
-        }
-    </style>
-</head>
-<body>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Project Portfolio - YAR Consult</title><script src="https://cdn.tailwindcss.com"></script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><style>body {font-family: 'Inter', sans-serif;background-color: #F9FAFB; /* Latar belakang sedikit kelabu /}.filter-btn {transition: all 0.3s ease;}.filter-btn.active {background-color: #0E3C45; / Warna tema baru */color: white;box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);}    /* --- (BARU) CSS UNTUK KAD FLIP 3D --- */
 
-    <div class="container mx-auto px-4 py-16">
+    /* Kontena utama untuk kad, menetapkan nisbah aspek A4 dan perspektif 3D */
+    .project-card {
+        display: block;
+        background-color: transparent;
+        /* Nisbah Aspek A4 Potret (210mm / 297mm) */
+        aspect-ratio: 210 / 297; 
+        perspective: 1000px; /* Diperlukan untuk kesan 3D */
+        transition: opacity 0.3s ease, transform 0.3s ease; /* Untuk animasi penapis */
+    }
 
-        <!-- SECTION 4: "PROJECTS" PAGE (PORTFOLIO) -->
-        <section id="projects">
-            <!-- 4.1. Portfolio Introduction -->
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold" style="color: #0E3C45;">Our Track Record</h2>
-                <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
-                    Since our establishment, we have been entrusted by various leading organizations to conduct SIA studies for large-scale and complex projects. Our portfolio spans multiple sectors and states, proving our ability to adapt to the unique challenges of each development.
-                </p>
-            </div>
+    /* Kontena dalaman yang melakukan pusingan flip */
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+    }
 
-            <!-- 4.2. Project Filters -->
-            <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-12">
-                <button class="filter-btn active py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('all')">All</button>
-                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('industrial')">Industrial</button>
-                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('housing')">Housing</button>
-                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('commercial')">Commercial</button>
-                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('other')">Others</button>
-                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('selangor')">Selangor</button>
-                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('melaka')">Melaka</button>
-                <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('pahang')">Pahang</button>
-            </div>
+    /* Kelas 'is-flipped' akan ditambah oleh JS untuk memutar kontena dalaman */
+    .project-card.is-flipped .flip-card-inner {
+        transform: rotateY(180deg);
+    }
 
-            <!-- 4.3. Project Gallery -->
-            <div id="project-gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- Sample Project 1 -->
-                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="commercial selangor">
-                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Mixed-Use+Dev" alt="Project Image" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Commercial</span>
-                           <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-1">Mixed-Use Development in Shah Alam</h3>
-                        <p class="text-sm text-gray-500 mb-4">Client: OSK Development</p>
-                        <p class="text-gray-700 text-base">
-                            Full SIA study for a large-scale commercial and residential project, including the development of SIA monitoring reports and an SIA monitoring system, ensuring community needs were integrated into the master plan.
-                        </p>
-                    </div>
-                </div>
+    /* Muka depan (Imej) dan Muka Belakang (Maklumat) */
+    .flip-card-front,
+    .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden; /* Sembunyikan muka belakang (untuk Safari) */
+        backface-visibility: hidden;
+        
+        /* Pastikan kedua-dua muka mempunyai sudut bulat dan bayang-bayang */
+        border-radius: 0.5rem; /* rounded-lg */
+        overflow: hidden; /* Penting untuk sudut bulat pada imej */
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); /* shadow-md */
+    }
+    
+    /* Muka depan: Mengandungi imej */
+    .flip-card-front {
+        background-color: #bbb; /* Latar belakang sementara jika imej gagal dimuat */
+        color: white;
+    }
 
-                <!-- Sample Project 2 -->
-                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="industrial selangor">
-                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Industrial+Park" alt="Project Image" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Industrial</span>
-                           <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-1">Industrial Development in Puncak Alam</h3>
-                        <p class="text-sm text-gray-500 mb-4">Client: Worldwide Sdn Bhd</p>
-                        <p class="text-gray-700 text-base">
-                            Strategic SIA to facilitate the development of a major industrial park, focusing on labor, traffic, and environmental social impacts.
-                        </p>
-                    </div>
-                </div>
+    /* Muka belakang: Mengandungi maklumat (p-6) */
+    .flip-card-back {
+        background-color: white; /* Latar belakang putih untuk maklumat */
+        transform: rotateY(180deg); /* Muka belakang dipusingkan secara lalai */
+        overflow-y: auto; /* Benarkan skrol jika kandungan melimpah */
+    }
+    
+    /* (DIKEMAS KINI) Hover diletakkan pada muka depan untuk UX yang lebih baik */
+    .flip-card-front:hover {
+         /* Bayang-bayang lebih besar semasa hover */
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
 
-                <!-- Sample Project 3 -->
-                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="housing selangor">
-                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Housing+Dev" alt="Project Image" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Housing</span>
-                           <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-1">Housing Development in Bukit Raja</h3>
-                        <p class="text-sm text-gray-500 mb-4">Client: Stack Builder Sdn Bhd</p>
-                        <p class="text-gray-700 text-base">
-                            Comprehensive assessment for a new housing township, focusing on social amenities, community integration, and public infrastructure.
-                        </p>
-                    </div>
-                </div>
-                
-                <!-- New Project: CLQ Bangi -->
-                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="other selangor">
-                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=CLQ+Bangi" alt="Project Image" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Others</span>
-                           <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-1">Centralised Labour Quarters (CLQ) in Bangi</h3>
-                        <p class="text-sm text-gray-500 mb-4">Client: PKNS</p>
-                        <p class="text-gray-700 text-base">
-                           SIA for a CLQ project, focusing on the social integration of foreign workers and its impact on local community services and infrastructure.
-                        </p>
-                    </div>
-                </div>
+    /* Kelas untuk animasi sembunyikan kad (penapisan) */
+    .project-card.hiding {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+</style>
+</head><body><div class="container mx-auto px-4 py-16">
 
-                <!-- New Project: Shrimp Aquaculture -->
-                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="other selangor">
-                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Shrimp+Farm" alt="Project Image" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Others</span>
-                           <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-1">Shrimp Aquaculture Farm</h3>
-                        <p class="text-sm text-gray-500 mb-4">Client: Galaksi Langat Sdn Bhd</p>
-                        <p class="text-gray-700 text-base">
-                            Social impact evaluation for a large-scale shrimp farm, assessing impacts on local fishermen livelihoods and water resource usage.
-                        </p>
-                    </div>
-                </div>
+    <!-- SECTION 4: "PROJECTS" PAGE (PORTFOLIO) -->
+    <section id="projects">
+        <!-- 4.1. Portfolio Introduction -->
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold" style="color: #0E3C45;">Our Track Record</h2>
+            <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
+                Since our establishment, we have been entrusted by various leading organizations to conduct SIA studies for large-scale and complex projects. Our portfolio spans multiple sectors and states, proving our ability to adapt to the unique challenges of each development.
+            </p>
+        </div>
 
-                <!-- Sample Project 4 -->
-                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="commercial melaka">
-                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Mixed+Dev" alt="Project Image" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Commercial</span>
-                           <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Melaka</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-1">Mixed Development in Durian Tunggal</h3>
-                        <p class="text-sm text-gray-500 mb-4">Client: Garuda Riang Sdn Bhd</p>
-                        <p class="text-gray-700 text-base">
-                           SIA study for a mixed development project under the jurisdiction of MPHTJ, successfully gaining community and authority approval.
-                        </p>
-                    </div>
-                </div>
+        <!-- 4.2. Project Filters (Unchanged) -->
+        <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-12">
+            <button class="filter-btn active py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('all')">All</button>
+            <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('industrial')">Industrial</button>
+            <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('housing')">Housing</button>
+            <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('commercial')">Commercial</button>
+            <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('other')">Others</button>
+            <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('selangor')">Selangor</button>
+            <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('melaka')">Melaka</button>
+            <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('pahang')">Pahang</button>
+            <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('perak')">Perak</button>
+            <button class="filter-btn py-2 px-4 rounded-full bg-white text-gray-700 font-semibold border border-gray-200" onclick="filterProjects('nsembilan')">N. Sembilan</button>
+        </div>
 
-                <!-- Sample Project 5 -->
-                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="industrial melaka">
-                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Industrial+Zone" alt="Project Image" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                         <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Industrial</span>
-                           <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Melaka</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-1">Industrial Park Development in Jasin</h3>
-                        <p class="text-sm text-gray-500 mb-4">Client: Guocoland Malaysia</p>
-                        <p class="text-gray-700 text-base">
-                            Conducted a full SIA to support the establishment of a new industrial park, leading to a successful approval with strong community backing.
-                        </p>
-                    </div>
-                </div>
-                
-                <!-- Sample Project 6 -->
-                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="housing pahang">
-                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=Resort+Housing" alt="Project Image" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Housing</span>
-                           <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Pahang</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-1">Housing Development in Cameron Highlands</h3>
-                        <p class="text-sm text-gray-500 mb-4">Client: Highlands Jaya Sdn Bhd</p>
-                        <p class="text-gray-700 text-base">
-                            Sensitive SIA study for a housing project in an environmentally and socially unique area, ensuring sustainable development practices.
-                        </p>
-                    </div>
-                </div>
-                
-                <!-- New Project: CLQ Melaka -->
-                <div class="project-card bg-white rounded-lg overflow-hidden shadow-md" data-category="other melaka">
-                    <img src="https://placehold.co/600x400/0E3C45/FFFFFF?text=CLQ+Melaka" alt="Project Image" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-2">
-                           <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Others</span>
-                           <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Melaka</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-1">Centralised Labour Quarters (CLQ) in Ayer Keroh</h3>
-                        <p class="text-sm text-gray-500 mb-4">Client: Vista Atlas</p>
-                        <p class="text-gray-700 text-base">
-                           Assessment for a CLQ project ensuring proper living standards and minimal social friction with the surrounding residential areas.
-                        </p>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-    </div>
-
-    <script>
-        function filterProjects(category) {
-            const gallery = document.getElementById('project-gallery');
-            const projects = Array.from(gallery.getElementsByClassName('project-card'));
-            const buttons = document.getElementsByClassName('filter-btn');
-
-            // Kemas kini status aktif untuk butang
-            for (let btn of buttons) { btn.classList.remove('active'); }
-            const activeButton = Array.from(buttons).find(btn => btn.getAttribute('onclick') === `filterProjects('${category}')`);
-            if (activeButton) { activeButton.classList.add('active'); }
+        <!-- 4.3. Project Gallery (UPDATED - Struktur HTML Flip Card) -->
+        <div id="project-gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            // Tapis kad projek dengan animasi
-            projects.forEach(project => {
-                const isMatch = category === 'all' || project.dataset.category.includes(category);
+            <!-- Project 1 (From PDF Page 3) -->
+            <div class="project-card" data-category="industrial melaka" onclick="flipCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="img/1.jpg" alt="Industrial Park Development in Jasin" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Industrial</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Melaka</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Industrial Park Development in Jasin</h3>
+                            <p class="text-sm text-gray-500 mb-4">Client: Asal Harta Sdn. Bhd.</p>
+                            <p class="text-gray-700 text-base">
+                                SIA for a 270.38-acre industrial park development in Mukim Ayer Panas, Daerah Jasin, Hang Tuah Jaya, Melaka.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                if (isMatch) {
-                    // Jika sepadan, paparkan semula
-                    project.style.display = 'block';
-                    setTimeout(() => {
-                        project.classList.remove('hiding'); // Mulakan animasi fade-in
-                    }, 10); // Lengah sedikit untuk membenarkan 'display' dikemas kini
-                } else {
-                    // Jika tidak sepadan, sembunyikan
-                    project.classList.add('hiding'); // Mulakan animasi fade-out
-                    setTimeout(() => {
-                        project.style.display = 'none'; // Sembunyikan elemen selepas animasi
-                    }, 300); // Mesti sepadan dengan tempoh transisi CSS (0.3s)
-                }
-            });
-        }
-    </script>
+            <!-- Project 2 (From PDF Page 4) -->
+            <div class="project-card" data-category="commercial selangor" onclick="flipCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="img/2.jpg" alt="Mixed Commercial Development in Seri Putra" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Commercial</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Mixed Commercial Development in Seri Putra</h3>
+                            <p class="text-sm text-gray-500 mb-4">Client: Top Home Builder Development Sdn Bhd</p>
+                            <p class="text-gray-700 text-base">
+                                SIA study for a mixed commercial development (Service Apartments & Business Buildings) in Bandar Seri Putra, Hulu Langat.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-</body>
-</html>
+            <!-- Project 3 (From PDF Page 5) -->
+            <div class="project-card" data-category="housing pahang" onclick="flipCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="img/3.jpg" alt="Apartment Development in Cameron Highlands" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Housing</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Pahang</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Apartment Development in Cameron Highlands</h3>
+                            <p class="text-sm text-gray-500 mb-4">Client: Syarikat Highlands Jaya Sdn Bhd</p>
+                            <p class="text-gray-700 text-base">
+                                SIA for a 10-storey strata residential apartment (132 units) development in Mukim Tanah Rata, Cameron Highlands.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project 4 (From PDF Page 7) -->
+            <div class="project-card" data-category="other selangor" onclick="flipCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="img/4.jpg" alt="Centralised Labour Quarters (CLQ) in Bangi" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Others</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Centralised Labour Quarters (CLQ) in Bangi</h3>
+                            <p class="text-sm text-gray-500 mb-4">Client: PKNS</p>
+                            <p class="text-gray-700 text-base">
+                                SIA for a Centralised Labour Quarters (4,488 residents) development by amending 7 existing 5-storey apartment blocks in Bandar Baru Bangi.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Project 5 (From PDF Page 9) -->
+            <div class="project-card" data-category="industrial nsembilan" onclick="flipCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="img/5.jpg" alt="Industrial Development in Port Dickson" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Industrial</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">N. Sembilan</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Industrial Development in Port Dickson</h3>
+                            <p class="text-sm text-gray-500 mb-4">Client: Eco Business Park 7 Sdn Bhd</p>
+                            <p class="text-gray-700 text-base">
+                                SIA for a 1195.35-acre industrial development in Mukim Jimah, Daerah Port Dickson, Negeri Sembilan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 6 (From PDF Page 11) -->
+            <div class="project-card" data-category="other perak" onclick="flipCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="img/6.jpg" alt="Solar Farm Development 29.99MW" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Others</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Perak</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Solar Farm Development 29.99MW</h3>
+                            <p class="text-sm text-gray-500 mb-4">Client: Gajahsuria Power Sdn Bhd</p>
+                            <p class="text-gray-700 text-base">
+                                SIA for a 116-acre, 29.99MW Solar Farm development in Mukim Kampung Gajah, Daerah Perak Tengah, Perak.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 7 (From PDF Page 13) -->
+            <div class="project-card" data-category="commercial melaka" onclick="flipCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="img/7.jpg" alt="Mixed Development in Durian Tunggal" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Commercial</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Melaka</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Mixed Development in Durian Tunggal</h3>
+                            <p class="text-sm text-gray-500 mb-4">Client: Garuda Riang Sdn. Bhd</p>
+                            <p class="text-gray-700 text-base">
+                                SIA study for a commercial and industrial development project in Mukim Durian Tunggal, Daerah Alor Gajah, Melaka.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 8 (From PDF Page 15) -->
+            <div class="project-card" data-category="industrial melaka" onclick="flipCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="img/8.jpg" alt="Light & High-Tech Industrial Park" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Industrial</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Melaka</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Light & High-Tech Industrial Park</h3>
+                            <p class="text-sm text-gray-500 mb-4">Client: GLM Emerald Industrial Park (Jasin) Sdn. Bhd</p>
+                            <p class="text-gray-700 text-base">
+                                SIA for a Light and High-Tech Industrial development in Mukim Jasin, Daerah Jasin, Melaka.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project 9 (From PDF Page 25) -->
+            <div class="project-card" data-category="housing selangor" onclick="flipCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="img/9.jpg" alt="Rumah Selangorku Development in Bukit Raja" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Housing</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Rumah Selangorku Development in Bukit Raja</h3>
+                            <p class="text-sm text-gray-500 mb-4">Client: Stack Builder Sdn. Bhd</H3>
+                            <p class="text-gray-700 text-base">
+                                SIA for Rumah Selangorku (Type E) development (2,892 units) with commercial space and support facilities in Mukim Bukit Raja, Shah Alam.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Project 10 (From PDF Page 27) -->
+            <div class="project-card" data-category="other pahang" onclick="flipCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="img/10.jpg" alt="Tiger Shrimp Aquaculture Farm" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Others</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Pahang</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Tiger Shrimp Aquaculture Farm</h3>
+                            <p class="text-sm text-gray-500 mb-4">Client: Tiger Aquaculture Sdn Bhd</p>
+                            <p class="text-gray-700 text-base">
+                                SIA for a 272.82-acre Tiger Shrimp farm development in Nenasi, Mukim Bebar, Daerah Pekan, Pahang.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 11 (From PDF Page 29) -->
+            <div class="project-card" data-category="other melaka" onclick="flipCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="img/11.jpg" alt="Workers' Dormitory (CLQ) in Bukit Katil" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Others</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Melaka</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Workers' Dormitory (CLQ) in Bukit Katil</h3>
+                            <p class="text-sm text-gray-500 mb-4">Client: Vista Atlas Sdn Bhd</p>
+                            <p class="text-gray-700 text-base">
+                                SIA for the construction of a workers' dormitory (CLQ) in Mukim Bukit Katil, Daerah Melaka Tengah, Hang Tuah Jaya.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 12 (From PDF Page 12) -->
+            <div class="project-card" data-category="industrial selangor" onclick="flipCard(this)">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <img src="img/12.jpg" alt="Industrial Development in Kuala Langat" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="p-6">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Industrial</span>
+                                <span class="inline-block bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Selangor</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-1">Industrial Development in Kuala Langat</h3>
+                            <p class="text-sm text-gray-500 mb-4">Client: Galaksi Langat Sdn. Bhd.</p>
+                            <p class="text-gray-700 text-base">
+                                SIA for a 400-acre industrial development in Mukim Tanjung Dua Belas, Daerah Kuala Langat, Selangor.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+<script>
+    /**
+     * (BARU) Menukar paparan maklumat terperinci untuk kad projek.
+     * @param {HTMLElement} cardElement - Elemen .project-card yang diklik.
+     */
+    function flipCard(cardElement) {
+        cardElement.classList.toggle('is-flipped');
+    }
+
+    /**
+     * (DIKEMAS KINI) Menapis galeri projek berdasarkan kategori.
+     * Juga akan 'reset' (sembunyikan) mana-mana maklumat terperinci yang sedang terbuka.
+     */
+    function filterProjects(category) {
+        const gallery = document.getElementById('project-gallery');
+        const projects = Array.from(gallery.getElementsByClassName('project-card'));
+        const buttons = document.getElementsByClassName('filter-btn');
+
+        // Kemas kini status aktif untuk butang
+        for (let btn of buttons) { btn.classList.remove('active'); }
+        const activeButton = Array.from(buttons).find(btn => btn.getAttribute('onclick') === `filterProjects('${category}')`);
+        if (activeButton) { activeButton.classList.add('active'); }
+        
+        // Tapis kad projek dengan animasi
+        projects.forEach(project => {
+            const isMatch = category === 'all' || project.dataset.category.includes(category);
+
+            // --- LOGIK BARU (Reset) ---
+            // Sembunyikan maklumat terperinci (flip balik) setiap kad apabila penapis digunakan
+            if (project.classList.contains('is-flipped')) {
+                project.classList.remove('is-flipped');
+            }
+            // --- TAMAT LOGIK BARU ---
+
+            if (isMatch) {
+                // Jika sepadan, paparkan semula
+                project.style.display = 'block';
+                setTimeout(() => {
+                    project.classList.remove('hiding'); // Mulakan animasi fade-in
+                }, 10); // Lengah sedikit untuk membenarkan 'display' dikemas kini
+            } else {
+                // Jika tidak sepadan, sembunyikan
+                project.classList.add('hiding'); // Mulakan animasi fade-out
+                setTimeout(() => {
+                    project.style.display = 'none'; // Sembunyikan elemen selepas animasi
+                }, 300); // Mesti sepadan dengan tempoh transisi CSS (0.3s)
+            }
+        });
+    }
+</script>
+</body></html>
